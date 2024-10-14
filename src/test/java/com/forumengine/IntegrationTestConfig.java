@@ -13,7 +13,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ActiveProfiles("test")
 public class IntegrationTestConfig {
 
-    @Container
     static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0")
             .withDatabaseName("forumengine")
             .withUsername("forum")
@@ -21,6 +20,8 @@ public class IntegrationTestConfig {
 
     @DynamicPropertySource
     static void mysqlProperties(DynamicPropertyRegistry registry) {
+        mySQLContainer.start();
+
         registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
         registry.add("spring.datasource.username", mySQLContainer::getUsername);
         registry.add("spring.datasource.password", mySQLContainer::getPassword);

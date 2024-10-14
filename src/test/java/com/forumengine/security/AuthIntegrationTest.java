@@ -1,7 +1,7 @@
 package com.forumengine.security;
 
 import com.forumengine.IntegrationTestConfig;
-import com.forumengine.Utils;
+import com.forumengine.TestUtils;
 import com.forumengine.security.dto.LoginUserDTO;
 import com.forumengine.security.dto.RegisterUserDTO;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class AuthIntegrationTest extends IntegrationTestConfig {
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(Utils.asJsonString(registerUserDTO)))
+                        .content(TestUtils.asJsonString(registerUserDTO)))
                 .andExpect(status().is(200));
 
         // given
@@ -41,7 +41,7 @@ public class AuthIntegrationTest extends IntegrationTestConfig {
         // when
         ResultActions result = mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(loginUserDTO)));
+                .content(TestUtils.asJsonString(loginUserDTO)));
 
         // then
         result.andExpect(status().is(200))
@@ -63,7 +63,7 @@ public class AuthIntegrationTest extends IntegrationTestConfig {
         // when
         ResultActions result = mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(registerUserDTO)));
+                .content(TestUtils.asJsonString(registerUserDTO)));
 
         // then
         result.andExpect(status().is(200))
@@ -84,7 +84,7 @@ public class AuthIntegrationTest extends IntegrationTestConfig {
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(Utils.asJsonString(registerUserDTO)))
+                        .content(TestUtils.asJsonString(registerUserDTO)))
                 .andExpect(status().is(200));
 
         // given
@@ -96,7 +96,7 @@ public class AuthIntegrationTest extends IntegrationTestConfig {
         // when
         ResultActions result = mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(duplicateUserDTO)));
+                .content(TestUtils.asJsonString(duplicateUserDTO)));
 
         // then
         result.andExpect(status().is(409))
@@ -113,7 +113,7 @@ public class AuthIntegrationTest extends IntegrationTestConfig {
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(Utils.asJsonString(registerUserDTO)))
+                        .content(TestUtils.asJsonString(registerUserDTO)))
                 .andExpect(status().is(200));
 
         // given
@@ -125,7 +125,7 @@ public class AuthIntegrationTest extends IntegrationTestConfig {
         // when
         ResultActions result = mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(Utils.asJsonString(duplicateUserDTO)));
+                .content(TestUtils.asJsonString(duplicateUserDTO)));
 
         // then
         result.andExpect(status().is(409))

@@ -2,7 +2,7 @@ package com.forumengine;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class Utils {
+public class TestUtils {
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
