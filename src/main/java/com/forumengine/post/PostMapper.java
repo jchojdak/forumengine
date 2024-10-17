@@ -5,6 +5,8 @@ import com.forumengine.post.dto.PostDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PostMapper {
@@ -34,4 +36,9 @@ public class PostMapper {
         return postDTO;
     }
 
+    public List<PostDTO> toPostDTOs(List<Post> posts) {
+        return posts.stream()
+                .map(this::toPostDTO)
+                .collect(Collectors.toList());
+    }
 }

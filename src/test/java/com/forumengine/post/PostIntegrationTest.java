@@ -18,6 +18,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,6 +34,9 @@ public class PostIntegrationTest extends IntegrationTestConfig {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -114,4 +121,28 @@ public class PostIntegrationTest extends IntegrationTestConfig {
                 .andExpect(jsonPath("$.message").value(INVALID_POST_ID + " not found"));
     }
 
+    @Test
+    @Transactional
+    void shouldReturn200AndPostList_whenGetAllPosts() throws Exception {
+        // given
+        Post post = new Post();
+        post.setTitle(POST_TITLE);
+        post.setContent(POST_CONTENT);
+        post.setAuthor(testUser);
+        post.setCategory(testCategory);
+        Post savedPost = postRepository.save(post);
+
+        // when
+        ResultActions result = mockMvc.perform(get(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        result.andExpect(status().is(200))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(savedPost.getId()))
+                .andExpect(jsonPath("$[0].authorId").value(testUser.getId()))
+                .andExpect(jsonPath("$[0].categoryId").value(testCategory.getId()))
+                .andExpect(jsonPath("$[0].title").value(POST_TITLE))
+                .andExpect(jsonPath("$[0].content").value(POST_CONTENT));
+    }
 }

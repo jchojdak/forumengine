@@ -9,11 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/posts")
@@ -32,5 +32,14 @@ public class PostController {
         String authorName = authentication.getName();
 
         return postService.createPost(createPostDTO, authorName);
+    }
+
+    @GetMapping
+    @Operation(summary = "Get all posts")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved list of posts.")
+    public List<PostDTO> getAllPosts(@RequestParam(required = false) Integer page,
+                                     @RequestParam(required = false) Integer size,
+                                     @RequestParam(required = false) Sort.Direction sort) {
+        return postService.getAllPosts(page, size, sort);
     }
 }

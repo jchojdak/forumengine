@@ -13,8 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -176,5 +178,57 @@ public class PostServiceTest {
         verify(categoryRepository, never()).findById(anyLong());
         verify(postMapper, never()).toPost(any(CreatePostDTO.class));
         verify(postRepository, never()).save(any(Post.class));
+    }
+
+    @Test
+    void testGetAllPosts() {
+        // given
+        Integer page = 0;
+        Integer size = 1;
+        Sort.Direction sort = Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort, "createdAt"));
+
+        Page<Post> postsPage = new PageImpl<>(List.of(post), pageable, 1);
+
+        when(postRepository.findAll(pageable)).thenReturn(postsPage);
+        when(postMapper.toPostDTOs(anyList())).thenReturn(List.of(postDTO));
+
+        // when
+        List<PostDTO> result = postService.getAllPosts(page, size, sort);
+
+        // then
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        assertEquals(postDTO, result.get(0));
+
+        verify(postRepository).findAll(pageable);
+        verify(postMapper).toPostDTOs(anyList());
+    }
+
+    @Test
+    void testGetAllPosts_withNullParameters() {
+        // given
+        Integer page = null;
+        Integer size = null;
+        Sort.Direction sort = null;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "createdAt"));
+
+        Page<Post> postsPage = new PageImpl<>(List.of(post), pageable, 1);
+
+        when(postRepository.findAll(pageable)).thenReturn(postsPage);
+        when(postMapper.toPostDTOs(anyList())).thenReturn(List.of(postDTO));
+
+        // when
+        List<PostDTO> result = postService.getAllPosts(page, size, sort);
+
+        // then
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        assertEquals(postDTO, result.get(0));
+
+        verify(postRepository).findAll(pageable);
+        verify(postMapper).toPostDTOs(anyList());
     }
 }

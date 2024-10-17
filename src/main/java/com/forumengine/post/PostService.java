@@ -8,8 +8,13 @@ import com.forumengine.post.dto.PostDTO;
 import com.forumengine.user.User;
 import com.forumengine.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,5 +45,17 @@ public class PostService {
 
         Post savedPost = postRepository.save(post);
         return postMapper.toPostDTO(savedPost);
+    }
+
+    public List<PostDTO> getAllPosts(Integer page, Integer size, Sort.Direction sort) {
+        int pageNumber = (page != null && page >= 0) ? page : 0;
+        int pageSize = (size != null && size >= 1) ? size : 10;
+        Sort.Direction sortDirection = (sort != null) ? sort : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortDirection, "createdAt"));
+
+        Page<Post> postsPage = postRepository.findAll(pageable);
+
+        return postMapper.toPostDTOs(postsPage.getContent());
     }
 }
