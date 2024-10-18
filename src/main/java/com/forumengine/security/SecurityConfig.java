@@ -67,6 +67,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/categories/*").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/categories/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/posts").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

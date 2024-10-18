@@ -4,6 +4,7 @@ import com.forumengine.category.Category;
 import com.forumengine.category.CategoryRepository;
 import com.forumengine.exception.EntityNotFoundException;
 import com.forumengine.post.dto.CreatePostDTO;
+import com.forumengine.post.dto.PostCommentsDTO;
 import com.forumengine.post.dto.PostDTO;
 import com.forumengine.user.User;
 import com.forumengine.user.UserRepository;
@@ -57,5 +58,15 @@ public class PostService {
         Page<Post> postsPage = postRepository.findAll(pageable);
 
         return postMapper.toPostDTOs(postsPage.getContent());
+    }
+
+    public PostCommentsDTO getPostById(Long id) {
+        Optional<Post> post = postRepository.findById(id);
+
+        if (post.isEmpty()) {
+            throw new EntityNotFoundException(id.toString());
+        }
+
+        return postMapper.toPostCommentsDTO(post.get());
     }
 }

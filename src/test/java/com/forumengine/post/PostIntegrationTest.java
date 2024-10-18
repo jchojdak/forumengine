@@ -4,11 +4,11 @@ import com.forumengine.IntegrationTestConfig;
 import com.forumengine.TestUtils;
 import com.forumengine.category.Category;
 import com.forumengine.category.CategoryRepository;
+import com.forumengine.comment.Comment;
 import com.forumengine.post.dto.CreatePostDTO;
 import com.forumengine.user.User;
 import com.forumengine.user.UserRepository;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -94,7 +94,7 @@ public class PostIntegrationTest extends IntegrationTestConfig {
         // then
         result.andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").value(POST_ID))
-                .andExpect(jsonPath("$.authorId").value(AUTHOR_ID))
+                .andExpect(jsonPath("$.authorId").value(testUser.getId()))
                 .andExpect(jsonPath("$.categoryId").value(testCategory.getId()))
                 .andExpect(jsonPath("$.title").value(POST_TITLE))
                 .andExpect(jsonPath("$.content").value(POST_CONTENT));
@@ -144,5 +144,52 @@ public class PostIntegrationTest extends IntegrationTestConfig {
                 .andExpect(jsonPath("$[0].categoryId").value(testCategory.getId()))
                 .andExpect(jsonPath("$[0].title").value(POST_TITLE))
                 .andExpect(jsonPath("$[0].content").value(POST_CONTENT));
+    }
+
+    @Test
+    @Transactional
+    void shouldReturn200AndPostDetails_whenGetPostById() throws Exception {
+        // given
+        List<Comment> comments = TestUtils.generateComments(3, testUser);
+
+        Post post = new Post();
+        post.setTitle(POST_TITLE);
+        post.setContent(POST_CONTENT);
+        post.setAuthor(testUser);
+        post.setCategory(testCategory);
+
+        for (Comment comment : comments) {
+            comment.setPost(post);
+        }
+        post.setComments(comments);
+
+        Post savedPost = postRepository.save(post);
+
+        // when
+        ResultActions result = mockMvc.perform(get(ENDPOINT + "/" + savedPost.getId())
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        result.andExpect(status().is(200))
+                .andExpect(jsonPath("$.id").value(savedPost.getId()))
+                .andExpect(jsonPath("$.authorId").value(testUser.getId()))
+                .andExpect(jsonPath("$.categoryId").value(testCategory.getId()))
+                .andExpect(jsonPath("$.title").value(POST_TITLE))
+                .andExpect(jsonPath("$.content").value(POST_CONTENT))
+                .andExpect(jsonPath("$.comments", hasSize(3)))
+                .andExpect(jsonPath("$.comments[0].content").value("Comment 1"))
+                .andExpect(jsonPath("$.comments[1].content").value("Comment 2"))
+                .andExpect(jsonPath("$.comments[2].content").value("Comment 3"));
+    }
+
+    @Test
+    @Transactional
+    void shouldReturn404_whenGetPostByIdAndNotFound() throws Exception {
+        // when
+        ResultActions result = mockMvc.perform(get(ENDPOINT + "/" + INVALID_POST_ID)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        result.andExpect(status().is(404));
     }
 }

@@ -2,6 +2,9 @@ package com.forumengine.comment;
 
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class CommentMapper {
 
@@ -15,6 +18,12 @@ public class CommentMapper {
         commentDTO.setUpdatedAt(comment.getUpdatedAt());
 
         return commentDTO;
+    }
+
+    public List<CommentDTO> toCommentDTOs(List<Comment> comments) {
+        return comments.stream()
+                .map(this::toCommentDTO)
+                .collect(Collectors.toList());
     }
 
 }

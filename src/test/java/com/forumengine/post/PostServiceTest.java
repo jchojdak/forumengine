@@ -1,9 +1,12 @@
 package com.forumengine.post;
 
+import com.forumengine.TestUtils;
 import com.forumengine.category.Category;
 import com.forumengine.category.CategoryRepository;
+import com.forumengine.comment.CommentDTO;
 import com.forumengine.exception.EntityNotFoundException;
 import com.forumengine.post.dto.CreatePostDTO;
+import com.forumengine.post.dto.PostCommentsDTO;
 import com.forumengine.post.dto.PostDTO;
 import com.forumengine.user.User;
 import com.forumengine.user.UserRepository;
@@ -57,6 +60,7 @@ public class PostServiceTest {
     private static final String CATEGORY_DESCRIPTION = "Test description";
 
     private static final Long POST_ID = 1L;
+    private static final Long INVALID_POST_ID = 404L;
     private static final String POST_TITLE = "Example post title";
     private static final String POST_CONTENT = "Example post content";
 
@@ -230,5 +234,62 @@ public class PostServiceTest {
 
         verify(postRepository).findAll(pageable);
         verify(postMapper).toPostDTOs(anyList());
+    }
+
+    @Test
+    void testGetPostById() {
+        // given
+        Long id = POST_ID;
+
+        PostCommentsDTO postCommentsDTO = new PostCommentsDTO();
+        postCommentsDTO.setId(id);
+        postCommentsDTO.setTitle(post.getTitle());
+        postCommentsDTO.setCategoryId(category.getId());
+        postCommentsDTO.setUpdatedAt(now);
+        postCommentsDTO.setCreatedAt(now);
+        postCommentsDTO.setAuthorId(author.getId());
+        postCommentsDTO.setContent(post.getContent());
+
+        List<CommentDTO> comments = TestUtils.generateCommentDTOs(3);
+
+        postCommentsDTO.setComments(comments);
+
+        when(postRepository.findById(id)).thenReturn(Optional.of(post));
+        when(postMapper.toPostCommentsDTO(any())).thenReturn(postCommentsDTO);
+
+        // when
+        PostCommentsDTO result = postService.getPostById(id);
+
+        // then
+        assertNotNull(result);
+        assertEquals(postCommentsDTO.getId(), result.getId());
+        assertEquals(postCommentsDTO.getTitle(), result.getTitle());
+        assertEquals(postCommentsDTO.getContent(), result.getContent());
+        assertEquals(postCommentsDTO.getCreatedAt(), result.getCreatedAt());
+        assertEquals(postCommentsDTO.getUpdatedAt(), result.getUpdatedAt());
+        assertEquals(3, result.getComments().size());
+
+        verify(postRepository).findById(id);
+        verify(postMapper).toPostCommentsDTO(any(Post.class));
+    }
+
+    @Test
+    void testGetPostById_throwNotFoundException_whenPostNotFound() {
+        // given
+        Long id = INVALID_POST_ID;
+
+        when(postRepository.findById(id)).thenReturn(Optional.empty());
+
+        // when
+        EntityNotFoundException result = assertThrows(EntityNotFoundException.class, () -> {
+            postService.getPostById(id);
+        });
+
+        // then
+        assertNotNull(result);
+        assertEquals(INVALID_POST_ID + " not found", result.getMessage());
+
+        verify(postRepository).findById(id);
+        verify(postMapper, never()).toPostCommentsDTO(any(Post.class));
     }
 }

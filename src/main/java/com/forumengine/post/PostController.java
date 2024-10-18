@@ -1,6 +1,7 @@
 package com.forumengine.post;
 
 import com.forumengine.post.dto.CreatePostDTO;
+import com.forumengine.post.dto.PostCommentsDTO;
 import com.forumengine.post.dto.PostDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -41,5 +42,15 @@ public class PostController {
                                      @RequestParam(required = false) Integer size,
                                      @RequestParam(required = false) Sort.Direction sort) {
         return postService.getAllPosts(page, size, sort);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get post by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved post."),
+            @ApiResponse(responseCode = "404", description = "Post not found.", content = @Content)
+    })
+    public PostCommentsDTO getPostById(@PathVariable Long id) {
+        return postService.getPostById(id);
     }
 }
