@@ -50,7 +50,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete the category", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Delete category by ID", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "200", description = "Category successfully deleted.")
     public void deleteCategoryById(@PathVariable Long id) {
         categoryService.deleteCategoryById(id);

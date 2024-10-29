@@ -48,4 +48,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, status);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<CustomExceptionResponse> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+        HttpStatus status = ex.getStatus();
+
+        CustomExceptionResponse response = new CustomExceptionResponse();
+        response.setPath(request.getRequestURI());
+        response.setError(status.name());
+        response.setMessage(ex.getMessage());
+        response.setStatus(status.value());
+
+        return new ResponseEntity<>(response, status);
+    }
+
 }

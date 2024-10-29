@@ -53,4 +53,15 @@ public class PostController {
     public PostCommentsDTO getPostById(@PathVariable Long id) {
         return postService.getPostById(id);
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete post by ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category successfully deleted."),
+            @ApiResponse(responseCode = "403", description = "User doesn't have permission.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Post not found.", content = @Content)
+    })
+    public void deletePostById(@PathVariable Long id, Authentication auth) {
+        postService.deletePostById(id, auth);
+    }
 }

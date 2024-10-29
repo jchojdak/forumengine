@@ -29,6 +29,20 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class PostServiceTest {
 
+    private static final Long AUTHOR_ID = 1L;
+    private static final String AUTHOR_USERNAME = "testAuthor";
+    private static final String INVALID_AUTHOR_USERNAME = "invalidAuthor";
+
+    private static final Long CATEGORY_ID = 1L;
+    private static final Long INVALID_CATEGORY_ID = 404L;
+    private static final String CATEGORY_NAME = "Test category";
+    private static final String CATEGORY_DESCRIPTION = "Test description";
+
+    private static final Long POST_ID = 1L;
+    private static final Long INVALID_POST_ID = 404L;
+    private static final String POST_TITLE = "Example post title";
+    private static final String POST_CONTENT = "Example post content";
+
     @InjectMocks
     private PostService postService;
 
@@ -49,20 +63,6 @@ public class PostServiceTest {
     private Post post;
     private PostDTO postDTO;
     private LocalDateTime now;
-
-    private static final Long AUTHOR_ID = 1L;
-    private static final String AUTHOR_USERNAME = "testAuthor";
-    private static final String INVALID_AUTHOR_USERNAME = "invalidAuthor";
-
-    private static final Long CATEGORY_ID = 1L;
-    private static final Long INVALID_CATEGORY_ID = 404L;
-    private static final String CATEGORY_NAME = "Test category";
-    private static final String CATEGORY_DESCRIPTION = "Test description";
-
-    private static final Long POST_ID = 1L;
-    private static final Long INVALID_POST_ID = 404L;
-    private static final String POST_TITLE = "Example post title";
-    private static final String POST_CONTENT = "Example post content";
 
     @BeforeEach
     void setUp() {
@@ -292,4 +292,5 @@ public class PostServiceTest {
         verify(postRepository).findById(id);
         verify(postMapper, never()).toPostCommentsDTO(any(Post.class));
     }
+
 }

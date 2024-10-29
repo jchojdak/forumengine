@@ -21,13 +21,30 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 public class PostIntegrationTest extends IntegrationTestConfig {
+
+    private static final String ENDPOINT = "/posts";
+
+    private static final Long CATEGORY_ID = 1L;
+    private static final Long INVALID_CATEGORY_ID = 404L;
+    private static final String CATEGORY_NAME = "Test category";
+    private static final String CATEGORY_DESCRIPTION = "Test description";
+
+    private static final Long AUTHOR_ID = 1L;
+    private static final String AUTHOR_USERNAME = "testAuthor";
+    private static final String AUTHOR_ROLE = "USER";
+
+    private static final String ERROR_MESSAGE_404 = "NOT_FOUND";
+
+    private static final Long POST_ID = 1L;
+    private static final Long INVALID_POST_ID = 404L;
+    private static final String POST_TITLE = "Example post title";
+    private static final String POST_CONTENT = "Example post content";
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,22 +60,6 @@ public class PostIntegrationTest extends IntegrationTestConfig {
 
     private User testUser;
     private Category testCategory;
-
-    private static final String ENDPOINT = "/posts";
-
-    private static final Long CATEGORY_ID = 1L;
-    private static final Long INVALID_CATEGORY_ID = 404L;
-    private static final String CATEGORY_NAME = "Test category";
-    private static final String CATEGORY_DESCRIPTION = "Test description";
-
-    private static final Long AUTHOR_ID = 1L;
-    private static final String AUTHOR_USERNAME = "testAuthor";
-    private static final String AUTHOR_ROLE = "USER";
-
-    private static final Long POST_ID = 1L;
-    private static final Long INVALID_POST_ID = 404L;
-    private static final String POST_TITLE = "Example post title";
-    private static final String POST_CONTENT = "Example post content";
 
     @BeforeEach
     void setUp() {
@@ -117,7 +118,7 @@ public class PostIntegrationTest extends IntegrationTestConfig {
 
         // then
         result.andExpect(status().is(404))
-                .andExpect(jsonPath("$.error").value("NOT_FOUND"))
+                .andExpect(jsonPath("$.error").value(ERROR_MESSAGE_404))
                 .andExpect(jsonPath("$.message").value(INVALID_POST_ID + " not found"));
     }
 
@@ -192,4 +193,5 @@ public class PostIntegrationTest extends IntegrationTestConfig {
         // then
         result.andExpect(status().is(404));
     }
+
 }
