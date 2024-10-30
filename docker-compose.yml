@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    container_name: mysql_db
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=forumengine
+      - MYSQL_USER=forumengine
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=P4SSW0RD
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - forumengine-network
+
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/forumengine
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysqldb
+    networks:
+      - forumengine-network
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    environment:
+      - PMA_HOST=mysqldb
+      - PMA_PORT=3306
+      - PMA_USER=forumengine
+      - PMA_PASSWORD=password
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysqldb
+    networks:
+      - forumengine-network
+
+networks:
+  forumengine-network:
+    driver: bridge
+
+volumes:
+  db_data:

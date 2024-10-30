@@ -5,7 +5,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
@@ -14,9 +13,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public class IntegrationTestConfig {
 
     static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0")
-            .withDatabaseName("forumengine")
-            .withUsername("forum")
-            .withPassword("forum");
+            .withDatabaseName("forumenginetest")
+            .withUsername("forumtest")
+            .withPassword("forumtest");
 
     @DynamicPropertySource
     static void mysqlProperties(DynamicPropertyRegistry registry) {
