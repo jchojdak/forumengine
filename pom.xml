@@ -13,12 +13,21 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ForumEngine</name>
 	<description>Description</description>
-	<url/>
+	<url>https://github.com/jchojdak/forumengine</url>
+
 	<licenses>
 		<license/>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<id>jchojdak</id>
+			<name>Jakub Chojdak</name>
+			<email>jchojdak@gmail.com</email>
+			<url>https://github.com/jchojdak</url>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
 	</developers>
 	<scm>
 		<connection/>
