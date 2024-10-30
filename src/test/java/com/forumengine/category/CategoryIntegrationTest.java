@@ -105,13 +105,13 @@ public class CategoryIntegrationTest extends IntegrationTestConfig {
         category1.setId(1L);
         category1.setName("Category 1");
         category1.setDescription("Description 1");
-        categoryRepository.save(category1);
+        Category savedCategory1 = categoryRepository.save(category1);
 
         Category category2 = new Category();
         category2.setId(2L);
         category2.setName("Category 2");
         category2.setDescription("Description 2");
-        categoryRepository.save(category2);
+        Category savedCategory2 = categoryRepository.save(category2);
 
         // when
         ResultActions result = mockMvc.perform(get("/categories")
@@ -120,10 +120,10 @@ public class CategoryIntegrationTest extends IntegrationTestConfig {
         // then
         result.andExpect(status().is(200))
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].id").value(savedCategory1.getId()))
                 .andExpect(jsonPath("$[0].name").value("Category 1"))
                 .andExpect(jsonPath("$[0].description").value("Description 1"))
-                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].id").value(savedCategory2.getId()))
                 .andExpect(jsonPath("$[1].name").value("Category 2"))
                 .andExpect(jsonPath("$[1].description").value("Description 2"));
 
