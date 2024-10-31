@@ -100,8 +100,8 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
         //then
         result.andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").value(COMMENT_ID))
-                .andExpect(jsonPath("$.postId").value(POST_ID))
-                .andExpect(jsonPath("$.authorId").value(AUTHOR_ID))
+                .andExpect(jsonPath("$.postId").value(testPost.getId()))
+                .andExpect(jsonPath("$.authorId").value(testUser.getId()))
                 .andExpect(jsonPath("$.content").value(COMMENT_CONTENT));
     }
 
