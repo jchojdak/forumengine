@@ -2,7 +2,7 @@ package com.forumengine;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.forumengine.comment.Comment;
-import com.forumengine.comment.CommentDTO;
+import com.forumengine.comment.dto.CommentDTO;
 import com.forumengine.user.User;
 
 import java.util.List;

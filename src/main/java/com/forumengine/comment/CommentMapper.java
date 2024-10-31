@@ -1,5 +1,6 @@
 package com.forumengine.comment;
 
+import com.forumengine.comment.dto.CommentDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

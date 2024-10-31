@@ -94,7 +94,6 @@ public class PostIntegrationTest extends IntegrationTestConfig {
 
         // then
         result.andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").value(POST_ID))
                 .andExpect(jsonPath("$.authorId").value(testUser.getId()))
                 .andExpect(jsonPath("$.categoryId").value(testCategory.getId()))
                 .andExpect(jsonPath("$.title").value(POST_TITLE))

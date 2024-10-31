@@ -1,4 +1,4 @@
-package com.forumengine.comment;
+package com.forumengine.comment.dto;
 
 import lombok.Data;
 

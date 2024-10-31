@@ -1,6 +1,6 @@
 package com.forumengine.post.dto;
 
-import com.forumengine.comment.CommentDTO;
+import com.forumengine.comment.dto.CommentDTO;
 import lombok.Data;
 
 import java.time.LocalDateTime;

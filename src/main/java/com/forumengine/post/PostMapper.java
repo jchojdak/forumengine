@@ -1,6 +1,6 @@
 package com.forumengine.post;
 
-import com.forumengine.comment.CommentDTO;
+import com.forumengine.comment.dto.CommentDTO;
 import com.forumengine.comment.CommentMapper;
 import com.forumengine.post.dto.CreatePostDTO;
 import com.forumengine.post.dto.PostCommentsDTO;
