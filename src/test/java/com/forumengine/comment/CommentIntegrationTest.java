@@ -39,6 +39,7 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
     private static final Long CATEGORY_ID = 1L;
 
     private static final Long POST_ID = 1L;
+    private static final Long INVALID_POST_ID = 404L;
     private static final String CATEGORY_NAME = "Test category";
     private static final String CATEGORY_DESCRIPTION = "Test description";
 
@@ -104,7 +105,7 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtils.asJsonString(createCommentDTO)));
 
-        //then
+        // then
         result.andExpect(status().is(200))
                 .andExpect(jsonPath("$.id").value(COMMENT_ID))
                 .andExpect(jsonPath("$.postId").value(testPost.getId()))
@@ -134,7 +135,7 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
         ResultActions result = mockMvc.perform(get(ENDPOINT.formatted(postId))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        //then
+        // then
         result.andExpect(status().is(200))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").value(savedComment1.getId()))
@@ -145,6 +146,21 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
                 .andExpect(jsonPath("$[1].content").value(COMMENT_CONTENT + COMMENT_CONTENT))
                 .andExpect(jsonPath("$[1].postId").value(postId))
                 .andExpect(jsonPath("$[1].authorId").value(testUser.getId()));
+    }
+
+    @Test
+    @Transactional
+    void shouldReturn404_whenGetAllComments() throws Exception {
+        // given
+        Long postId = INVALID_POST_ID;
+
+        // when
+        ResultActions result = mockMvc.perform(get(ENDPOINT.formatted(postId))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        result.andExpect(status().is(404));
+
     }
 
 }
