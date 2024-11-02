@@ -3,6 +3,7 @@ package com.forumengine.comment;
 import com.forumengine.category.Category;
 import com.forumengine.comment.dto.CommentDTO;
 import com.forumengine.comment.dto.CreateCommentDTO;
+import com.forumengine.exception.EntityNotFoundException;
 import com.forumengine.post.Post;
 import com.forumengine.post.PostRepository;
 import com.forumengine.user.User;
@@ -13,15 +14,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
@@ -34,9 +35,14 @@ public class CommentServiceTest {
     private static final String CATEGORY_DESCRIPTION = "Test description";
 
     private static final Long POST_ID = 1L;
+    private static final Long INVALID_POST_ID = 404L;
 
     private static final Long COMMENT_ID = 1L;
     private static final String COMMENT_CONTENT = "Test content";
+
+    private static final String SORT_PROPERTIES = "createdAt";
+
+    private static final String NOT_FOUND_MESSAGE = "%s not found";
 
     @InjectMocks
     private CommentService commentService;
@@ -115,6 +121,89 @@ public class CommentServiceTest {
         verify(userRepository).findByUsername(AUTHOR_USERNAME);
         verify(commentRepository).save(any(Comment.class));
         verify(commentMapper).toCommentDTO(comment);
+    }
+
+    @Test
+    void testGetAllComments() {
+        // given
+        Long postId = 1L;
+        Integer page = 0;
+        Integer size = 1;
+        Sort.Direction sort = Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort, SORT_PROPERTIES));
+
+        Page<Comment> commentsPage = new PageImpl<>(List.of(comment, comment), pageable, 1);
+
+        when(commentRepository.findAllByPostId(POST_ID, pageable)).thenReturn(commentsPage);
+        when(commentMapper.toCommentDTOs(anyList())).thenReturn(List.of(commentDTO, commentDTO));
+
+        // when
+        List<CommentDTO> result = commentService.getAllComments(postId, page, size, sort);
+
+        // then
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.size());
+        assertEquals(commentDTO, result.get(0));
+        assertEquals(commentDTO, result.get(1));
+
+        verify(commentRepository).findAllByPostId(POST_ID, pageable);
+        verify(commentMapper).toCommentDTOs(anyList());
+    }
+
+    @Test
+    void testGetAllComments_throwEntityNotException_whenPostNotFound() {
+        // given
+        Long postId = INVALID_POST_ID;
+        Integer page = 0;
+        Integer size = 1;
+        Sort.Direction sort = Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort, SORT_PROPERTIES));
+
+        when(commentRepository.findAllByPostId(postId, pageable)).thenReturn(Page.empty());
+
+        // when
+        EntityNotFoundException result = assertThrows(EntityNotFoundException.class, () -> {
+            commentService.getAllComments(postId, page, size, sort);
+        });
+
+        // then
+        assertNotNull(result);
+        assertEquals(NOT_FOUND_MESSAGE.formatted(INVALID_POST_ID), result.getMessage());
+
+        verify(commentRepository).findAllByPostId(postId, pageable);
+        verify(commentMapper, never()).toCommentDTOs(anyList());
+    }
+
+    @Test
+    void testGetAllComments_withNullParameters() {
+        // given
+        Long postId = 1L;
+        Integer page = null;
+        Integer size = null;
+        Sort.Direction sort = null;
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, SORT_PROPERTIES));
+
+        Page<Comment> commentsPage = new PageImpl<>(List.of(comment, comment), pageable, 1);
+
+        when(commentRepository.findAllByPostId(POST_ID, pageable)).thenReturn(commentsPage);
+        when(commentMapper.toCommentDTOs(anyList())).thenReturn(List.of(commentDTO, commentDTO));
+
+        // when
+        List<CommentDTO> result = commentService.getAllComments(postId, page, size, sort);
+
+        // then
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.size());
+        assertEquals(commentDTO, result.get(0));
+        assertEquals(commentDTO, result.get(1));
+
+        verify(commentRepository).findAllByPostId(POST_ID, pageable);
+        verify(commentMapper).toCommentDTOs(anyList());
     }
 
 }
