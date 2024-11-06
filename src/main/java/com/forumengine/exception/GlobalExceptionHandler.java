@@ -61,4 +61,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, status);
     }
 
+    @ExceptionHandler(CommentNotBelongToPostException.class)
+    public ResponseEntity<CustomExceptionResponse> handleCommentNotBelongToPostException(CommentNotBelongToPostException ex, HttpServletRequest request) {
+        HttpStatus status = ex.getStatus();
+
+        CustomExceptionResponse response = new CustomExceptionResponse();
+        response.setPath(request.getRequestURI());
+        response.setError(status.name());
+        response.setMessage(ex.getMessage());
+        response.setStatus(status.value());
+
+        return new ResponseEntity<>(response, status);
+    }
+
 }

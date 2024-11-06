@@ -28,7 +28,9 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "New comment successfully added to the post."),
             @ApiResponse(responseCode = "404", description = "Post not found.", content = @Content)
     })
-    public CommentDTO createComment(@PathVariable Long postId, @RequestBody @Valid CreateCommentDTO createCommentDTO, Authentication authentication) {
+    public CommentDTO createComment(@PathVariable Long postId,
+                                    @RequestBody @Valid CreateCommentDTO createCommentDTO,
+                                    Authentication authentication) {
         String authorName = authentication.getName();
 
         return commentService.createComment(postId, createCommentDTO, authorName);
@@ -45,6 +47,21 @@ public class CommentController {
                                            @RequestParam(required = false) Integer size,
                                            @RequestParam(required = false) Sort.Direction sort) {
         return commentService.getAllComments(postId, page, size, sort);
+    }
+
+    @DeleteMapping("/{commentId}")
+    @Operation(summary = "Delete comment by ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Comment successfully deleted."),
+            @ApiResponse(responseCode = "400", description = "The comment does not belong to the post.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "User doesn't have permission.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Post not found.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Comment not found.", content = @Content)
+    })
+    public void deleteById(@PathVariable Long postId,
+                           @PathVariable Long commentId,
+                           Authentication auth) {
+        commentService.deleteById(postId, commentId, auth);
     }
 
 }
