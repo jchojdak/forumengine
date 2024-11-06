@@ -362,6 +362,34 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete comment by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmciLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlhdCI6MTcyNzk3NDk2OCwiZXhwIjoxNzI3OTc4NTY4fQ.fhrLAtzqgA_BAEX4Bgx-fG-kDwfZsMI-NXxQooz4wTI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/posts/1/comments/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"posts",
+								"1",
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
