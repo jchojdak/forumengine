@@ -3,6 +3,7 @@ package com.forumengine.comment;
 import com.forumengine.category.Category;
 import com.forumengine.comment.dto.CommentDTO;
 import com.forumengine.comment.dto.CreateCommentDTO;
+import com.forumengine.exception.CommentNotBelongToPostException;
 import com.forumengine.exception.EntityNotFoundException;
 import com.forumengine.post.Post;
 import com.forumengine.post.PostRepository;
@@ -35,14 +36,19 @@ public class CommentServiceTest {
     private static final String CATEGORY_DESCRIPTION = "Test description";
 
     private static final Long POST_ID = 1L;
+    private static final Long SECOND_POST_ID = 2L;
     private static final Long INVALID_POST_ID = 404L;
 
     private static final Long COMMENT_ID = 1L;
+    private static final Long INVALID_COMMENT_ID = 404L;
     private static final String COMMENT_CONTENT = "Test content";
 
     private static final String SORT_PROPERTIES = "createdAt";
 
     private static final String NOT_FOUND_MESSAGE = "%s not found";
+    private static final String POST_NOT_FOUND_MESSAGE = "Post %s not found";
+    private static final String COMMENT_NOT_FOUND_MESSAGE = "Comment %s not found";
+    private static final String COMMENT_NOT_BELONG_TO_POST_MESSAGE = "The comment %s does not belong to the post %s.";
 
     @InjectMocks
     private CommentService commentService;
@@ -206,4 +212,83 @@ public class CommentServiceTest {
         verify(commentMapper).toCommentDTOs(anyList());
     }
 
+    @Test
+    void testGetCommentById() {
+        // given
+        when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+        when(commentMapper.toCommentDTO(any(Comment.class))).thenReturn(commentDTO);
+
+        // when
+        CommentDTO result = commentService.getCommentById(POST_ID, COMMENT_ID);
+
+        // then
+        assertNotNull(result);
+        assertEquals(commentDTO, result);
+        verify(postRepository).findById(anyLong());
+        verify(commentRepository).findById(anyLong());
+        verify(commentMapper).toCommentDTO(any(Comment.class));
+    }
+
+    @Test
+    void testGetCommentById_throwEntityNotException_whenPostNotFound() {
+        // given
+        when(postRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // when
+        EntityNotFoundException result = assertThrows(EntityNotFoundException.class, () -> {
+            commentService.getCommentById(INVALID_POST_ID, COMMENT_ID);
+        });
+
+        // then
+        assertNotNull(result);
+        assertEquals(POST_NOT_FOUND_MESSAGE.formatted(INVALID_POST_ID), result.getMessage());
+
+        verify(postRepository).findById(INVALID_POST_ID);
+        verifyNoInteractions(commentRepository, commentMapper);
+    }
+
+    @Test
+    void testGetCommentById_throwEntityNotException_whenCommentNotFound() {
+        // given
+        when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // when
+        EntityNotFoundException result = assertThrows(EntityNotFoundException.class, () -> {
+            commentService.getCommentById(POST_ID, INVALID_COMMENT_ID);
+        });
+
+        // then
+        assertNotNull(result);
+        assertEquals(COMMENT_NOT_FOUND_MESSAGE.formatted(INVALID_COMMENT_ID), result.getMessage());
+
+        verify(postRepository).findById(POST_ID);
+        verify(commentRepository).findById(INVALID_COMMENT_ID);
+        verifyNoInteractions(commentMapper);
+    }
+
+    @Test
+    void testGetCommentById_throwCommentNotBelongToPostException() {
+        // given
+        Post secondPost = new Post();
+        secondPost.setId(SECOND_POST_ID);
+        comment.setPost(secondPost);
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+
+        // when
+        CommentNotBelongToPostException result = assertThrows(CommentNotBelongToPostException.class, () -> {
+            commentService.getCommentById(POST_ID, COMMENT_ID);
+        });
+
+        // then
+        assertNotNull(result);
+        assertEquals(COMMENT_NOT_BELONG_TO_POST_MESSAGE.formatted(POST_ID, COMMENT_ID), result.getMessage());
+
+        verify(postRepository).findById(POST_ID);
+        verify(commentRepository).findById(COMMENT_ID);
+        verifyNoInteractions(commentMapper);
+    }
 }
