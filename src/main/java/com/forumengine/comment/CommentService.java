@@ -77,7 +77,7 @@ public class CommentService {
         return commentMapper.toCommentDTOs(commentsPage.getContent());
     }
 
-    public void deleteById(Long postId, Long commentId, Authentication auth) {
+    public void deleteCommentById(Long postId, Long commentId, Authentication auth) {
         Optional<Post> post = postRepository.findById(postId);
 
         if (post.isEmpty()) {
@@ -116,5 +116,25 @@ public class CommentService {
     private Long getUserIdFromAuthentication(Authentication auth) {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         return userDetails.getId();
+    }
+
+    public CommentDTO getCommentById(Long postId, Long commentId) {
+        Optional<Post> post = postRepository.findById(postId);
+
+        if (post.isEmpty()) {
+            throw new EntityNotFoundException(POST_NOT_FOUND_MESSAGE.formatted(postId));
+        }
+
+        Optional<Comment> comment = commentRepository.findById(commentId);
+
+        if (comment.isEmpty()) {
+            throw new EntityNotFoundException(COMMENT_NOT_FOUND_MESSAGE.formatted(commentId));
+        }
+
+        if (!comment.get().getPost().getId().equals(postId)) {
+            throw new CommentNotBelongToPostException(commentId, postId);
+        }
+
+        return commentMapper.toCommentDTO(comment.get());
     }
 }
