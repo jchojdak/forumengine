@@ -13,6 +13,9 @@
 				{
 					"name": "User registration",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -42,6 +45,9 @@
 				{
 					"name": "User login",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -77,13 +83,7 @@
 					"name": "Add a new category",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmciLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlhdCI6MTcyNzk3NDk2OCwiZXhwIjoxNzI3OTc4NTY4fQ.fhrLAtzqgA_BAEX4Bgx-fG-kDwfZsMI-NXxQooz4wTI",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"name\": \"Example category\",\r\n    \"description\": \"Description of example category\"\r\n}",
@@ -110,6 +110,9 @@
 				{
 					"name": "Get all categories",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -129,6 +132,9 @@
 				{
 					"name": "Get category by ID",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -150,13 +156,7 @@
 					"name": "Delete category by ID",
 					"request": {
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmciLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlhdCI6MTcyNzk3NDk2OCwiZXhwIjoxNzI3OTc4NTY4fQ.fhrLAtzqgA_BAEX4Bgx-fG-kDwfZsMI-NXxQooz4wTI",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "http://localhost:8080/categories/1",
 							"protocol": "http",
@@ -180,6 +180,9 @@
 				{
 					"name": "Get all posts",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -217,13 +220,7 @@
 					"name": "Add a new post",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmciLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlhdCI6MTcyNzk3NDk2OCwiZXhwIjoxNzI3OTc4NTY4fQ.fhrLAtzqgA_BAEX4Bgx-fG-kDwfZsMI-NXxQooz4wTI",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n  \"categoryId\": 1,\r\n  \"title\": \"Example title\",\r\n  \"content\": \"Example content\"\r\n}",
@@ -250,6 +247,9 @@
 				{
 					"name": "Get post by ID",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -271,13 +271,7 @@
 					"name": "Delete post by ID",
 					"request": {
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmciLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlhdCI6MTcyNzk3NDk2OCwiZXhwIjoxNzI3OTc4NTY4fQ.fhrLAtzqgA_BAEX4Bgx-fG-kDwfZsMI-NXxQooz4wTI",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "http://localhost:8080/posts/1",
 							"protocol": "http",
@@ -301,6 +295,9 @@
 				{
 					"name": "Get all comments",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -340,13 +337,7 @@
 					"name": "Add a new comment to the post",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmciLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlhdCI6MTcyNzk3NDk2OCwiZXhwIjoxNzI3OTc4NTY4fQ.fhrLAtzqgA_BAEX4Bgx-fG-kDwfZsMI-NXxQooz4wTI",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"url": {
 							"raw": "http://localhost:8080/posts/1/comments",
 							"protocol": "http",
@@ -367,13 +358,32 @@
 					"name": "Delete comment by ID",
 					"request": {
 						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmciLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlhdCI6MTcyNzk3NDk2OCwiZXhwIjoxNzI3OTc4NTY4fQ.fhrLAtzqgA_BAEX4Bgx-fG-kDwfZsMI-NXxQooz4wTI",
-								"type": "text"
-							}
-						],
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/posts/1/comments/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"posts",
+								"1",
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get comment by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "http://localhost:8080/posts/1/comments/1",
 							"protocol": "http",
@@ -392,6 +402,38 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzMwOTY5MTkyLCJleHAiOjE3MzA5NzI3OTJ9.H1wMzWmAbepgdguaKyb6jn722ggtLYjyYEEEg50ayX4",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
