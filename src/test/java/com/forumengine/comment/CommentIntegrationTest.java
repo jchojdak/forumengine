@@ -160,7 +160,6 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
 
         // then
         result.andExpect(status().is(404));
-
     }
 
 }

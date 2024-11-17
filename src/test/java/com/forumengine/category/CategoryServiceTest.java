@@ -22,6 +22,16 @@ import static org.mockito.Mockito.verifyNoInteractions;
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest {
 
+    private static final Long FIRST_CATEGORY_ID = 1L;
+    private static final String FIRST_CATEGORY_NAME = "Category 1";
+    private static final String FIRST_CATEGORY_DESCRIPTION = "Description 1";
+
+    private static final Long SECOND_CATEGORY_ID = 2L;
+    private static final String SECOND_CATEGORY_NAME = "Category 2";
+    private static final String SECOND_CATEGORY_DESCRIPTION = "Description 2";
+
+    private static final Long NOT_FOUND_ID = 404L;
+
     @InjectMocks
     private CategoryService categoryService;
 
@@ -37,9 +47,9 @@ public class CategoryServiceTest {
     @BeforeEach
     void setUp() {
         category = new Category();
-        category.setId(1L);
-        category.setName("Category 1");
-        category.setDescription("Description 1");
+        category.setId(FIRST_CATEGORY_ID);
+        category.setName(FIRST_CATEGORY_NAME);
+        category.setDescription(FIRST_CATEGORY_DESCRIPTION);
 
         categoryDTO = new CategoryDTO();
         categoryDTO.setId(category.getId());
@@ -98,33 +108,33 @@ public class CategoryServiceTest {
     @Test
     void testGetCategoryById() {
         // given
-        when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
+        when(categoryRepository.findById(FIRST_CATEGORY_ID)).thenReturn(Optional.of(category));
         when(categoryMapper.toCategoryDTO(category)).thenReturn(categoryDTO);
 
         // when
-        CategoryDTO result = categoryService.getCategoryById(1L);
+        CategoryDTO result = categoryService.getCategoryById(FIRST_CATEGORY_ID);
 
         //then
         assertNotNull(result);
-        assertEquals(result.getId(), 1L);
-        assertEquals(result.getName(), "Category 1");
-        assertEquals(result.getDescription(), "Description 1");
+        assertEquals(result.getId(), FIRST_CATEGORY_ID);
+        assertEquals(result.getName(), FIRST_CATEGORY_NAME);
+        assertEquals(result.getDescription(), FIRST_CATEGORY_DESCRIPTION);
 
-        verify(categoryRepository).findById(1L);
+        verify(categoryRepository).findById(FIRST_CATEGORY_ID);
         verify(categoryMapper).toCategoryDTO(category);
     }
 
     @Test
     void testGetCategoryById_throwNotFoundException_whenCategoryNotFound() {
         // given
-        when(categoryRepository.findById(404L)).thenReturn(Optional.empty());
+        when(categoryRepository.findById(NOT_FOUND_ID)).thenReturn(Optional.empty());
 
         // when & then
         assertThrows(EntityNotFoundException.class, () -> {
-            categoryService.getCategoryById(404L);
+            categoryService.getCategoryById(NOT_FOUND_ID);
         });
 
-        verify(categoryRepository).findById(404L);
+        verify(categoryRepository).findById(NOT_FOUND_ID);
         verifyNoInteractions(categoryMapper);
     }
 
@@ -132,9 +142,9 @@ public class CategoryServiceTest {
     void testGetAllCategories() {
         // given
         Category category2 = new Category();
-        category2.setId(2L);
-        category2.setName("Category 2");
-        category2.setDescription("Description 2");
+        category2.setId(SECOND_CATEGORY_ID);
+        category2.setName(SECOND_CATEGORY_NAME);
+        category2.setDescription(SECOND_CATEGORY_DESCRIPTION);
 
         CategoryDTO categoryDTO2 = new CategoryDTO();
         categoryDTO2.setId(category2.getId());

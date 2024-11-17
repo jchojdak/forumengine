@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TestUtils {
+
+    private static final String GENERATED_CONTENT = "Comment %s";
+
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
@@ -27,7 +30,7 @@ public class TestUtils {
                     comment.setId((long) i);
                     comment.setAuthorId((long) i);
                     comment.setAuthorId(1L + i);
-                    comment.setContent("Comment " + i);
+                    comment.setContent(GENERATED_CONTENT.formatted(i));
                     return comment;
                 })
                 .collect(Collectors.toList());
@@ -41,7 +44,7 @@ public class TestUtils {
                     Comment comment = new Comment();
                     comment.setId((long) i);
                     comment.setAuthor(author);
-                    comment.setContent("Comment " + i);
+                    comment.setContent(GENERATED_CONTENT.formatted(i));
                     return comment;
                 })
                 .collect(Collectors.toList());
