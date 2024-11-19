@@ -22,4 +22,14 @@ public class UserService {
 
         return userMapper.toDTO(user.get());
     }
+
+    public void deleteUserById(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException(userId.toString());
+        }
+
+        userRepository.deleteById(userId);
+    }
 }
