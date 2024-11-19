@@ -102,4 +102,34 @@ public class UserServiceTest {
         verify(userRepository).findById(anyLong());
         verifyNoInteractions(userMapper);
     }
+
+    @Test
+    void testDeleteUserById() {
+        // given
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
+
+        // when
+        userService.deleteUserById(USER_ID);
+
+        // then
+        verify(userRepository).findById(USER_ID);
+        verify(userRepository).deleteById(USER_ID);
+    }
+
+    @Test
+    void testDeleteUserById_throwEntityNotException_whenUserNotFound() {
+        // given
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // when
+        EntityNotFoundException result = assertThrows(EntityNotFoundException.class, () -> {
+            userService.deleteUserById(INVALID_USER_ID);
+        });
+
+        // then
+        assertNotNull(result);
+        assertEquals(NOT_FOUND_MESSAGE.formatted(INVALID_USER_ID), result.getMessage());
+
+        verify(userRepository).findById(anyLong());
+    }
 }
