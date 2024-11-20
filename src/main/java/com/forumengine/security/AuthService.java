@@ -1,8 +1,11 @@
 package com.forumengine.security;
 
+import com.forumengine.exception.EntityNotFoundException;
+import com.forumengine.exception.InvalidPasswordException;
 import com.forumengine.exception.UserAlreadyExistsException;
 import com.forumengine.role.Role;
 import com.forumengine.role.RoleRepository;
+import com.forumengine.security.dto.ChangePasswordRequest;
 import com.forumengine.security.dto.LoginUserDTO;
 import com.forumengine.security.dto.LoginUserResponse;
 import com.forumengine.security.dto.RegisterUserDTO;
@@ -13,6 +16,7 @@ import com.forumengine.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +30,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
+    private static final String INVALID_PASSWORD_MESSAGE = "Invalid old password.";
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -86,4 +92,18 @@ public class AuthService {
         return loginUserResponse;
     }
 
+    public void changePassword(String username, ChangePasswordRequest request) {
+        Optional<User> findUser = userRepository.findByUsername(username);
+
+        if (findUser.isEmpty()) throw new EntityNotFoundException(username);
+
+        User user = findUser.get();
+
+        if (!encoder.matches(request.getOldPassword(), user.getPassword())) throw new InvalidPasswordException(INVALID_PASSWORD_MESSAGE);
+
+        String encodedNewPassword = encoder.encode(request.getNewPassword());
+
+        user.setPassword(encodedNewPassword);
+        userRepository.save(user);
+    }
 }

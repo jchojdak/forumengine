@@ -73,6 +73,35 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Change the password of the logged in user",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"oldPassword123\",\r\n    \"newPassword\": \"newPassword123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"password"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -457,7 +486,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfVVNFUiIsIlJPTEVfQURNSU4iXSwiaWF0IjoxNzMwOTY5MTkyLCJleHAiOjE3MzA5NzI3OTJ9.H1wMzWmAbepgdguaKyb6jn722ggtLYjyYEEEg50ayX4",
+				"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHJpbmciLCJyb2xlcyI6WyJST0xFX1VTRVIiXSwiaWF0IjoxNzMyMTQxNTIwLCJleHAiOjE3MzIxNDUxMjB9.szotbYKjH5_UZkAVmOzaBxk45hCgCSF_rtFlQPaIjmA",
 				"type": "string"
 			}
 		]
