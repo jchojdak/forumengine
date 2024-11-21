@@ -9,6 +9,7 @@ import com.forumengine.exception.EntityNotFoundException;
 import com.forumengine.post.dto.CreatePostDTO;
 import com.forumengine.post.dto.PostCommentsDTO;
 import com.forumengine.post.dto.PostDTO;
+import com.forumengine.post.dto.UpdatePostRequest;
 import com.forumengine.security.CustomUserDetails;
 import com.forumengine.user.User;
 import com.forumengine.user.UserRepository;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +30,7 @@ import java.util.Optional;
 public class PostService {
 
     private static final String ACCESS_DENIED_MESSAGE = "You do not have permission to delete this post.";
+    private static final String ACCESS_DENIED_MESSAGE_UPDATE = "You do not have permission to update this post.";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String SORT_PROPERTIES = "createdAt";
 
@@ -100,6 +103,41 @@ public class PostService {
         }
     }
 
+    private Long getUserIdFromAuthentication(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getId();
+    }
+
+    public PostDTO updatePostById(Long id, String username, UpdatePostRequest request) {
+        Optional<Post> findPost = postRepository.findById(id);
+        if (findPost.isEmpty()) throw new EntityNotFoundException(id.toString());
+        Post post = findPost.get();
+
+        Optional<User> findUser = userRepository.findByUsername(username);
+        if (findUser.isEmpty()) throw new EntityNotFoundException(username);
+        User loggedInUser = findUser.get();
+
+        if (!isAuthor(loggedInUser.getId(), post.getAuthor().getId())) {
+            throw new AccessDeniedException(ACCESS_DENIED_MESSAGE_UPDATE);
+        }
+
+        String newTitle = request.getTitle();
+        if (newTitle != null && !newTitle.isEmpty()) {
+            post.setTitle(newTitle);
+        }
+
+        String newContent = request.getContent();
+        if (newContent != null && !newContent.isEmpty()) {
+            post.setContent(newContent);
+        }
+
+        post.setUpdatedAt(LocalDateTime.now());
+
+        post = postRepository.save(post);
+
+        return postMapper.toPostDTO(post);
+    }
+
     private boolean isAuthor(Long userId, Long authorId) {
         return userId.equals(authorId);
     }
@@ -109,8 +147,4 @@ public class PostService {
                 .anyMatch(authentication -> authentication.getAuthority().equals(ROLE_ADMIN));
     }
 
-    private Long getUserIdFromAuthentication(Authentication authentication) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getId();
-    }
 }
