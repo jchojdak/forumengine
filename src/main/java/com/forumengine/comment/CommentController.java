@@ -2,6 +2,7 @@ package com.forumengine.comment;
 
 import com.forumengine.comment.dto.CommentDTO;
 import com.forumengine.comment.dto.CreateCommentDTO;
+import com.forumengine.comment.dto.UpdateCommentRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -55,8 +57,7 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "Comment successfully deleted."),
             @ApiResponse(responseCode = "400", description = "The comment does not belong to the post.", content = @Content),
             @ApiResponse(responseCode = "403", description = "User doesn't have permission.", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Post not found.", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Comment not found.", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Post or comment not found.", content = @Content)
     })
     public void deleteCommentById(@PathVariable Long postId,
                            @PathVariable Long commentId,
@@ -69,12 +70,28 @@ public class CommentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved comment."),
             @ApiResponse(responseCode = "400", description = "The comment does not belong to the post.", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Post not found.", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Comment not found.", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Post or comment not found.", content = @Content)
     })
     public CommentDTO getById(@PathVariable Long postId,
                               @PathVariable Long commentId) {
         return commentService.getCommentById(postId, commentId);
+    }
+
+    @PatchMapping("/{commentId}")
+    @Operation(summary = "Update comment by ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Comment successfully updated."),
+            @ApiResponse(responseCode = "400", description = "The comment does not belong to the post.", content = @Content),
+            @ApiResponse(responseCode = "403", description = "User doesn't have permission.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Post or comment not found.", content = @Content)
+    })
+    public CommentDTO updateCommentById(@PathVariable Long postId,
+                                        @PathVariable Long commentId,
+                                        @RequestBody @Valid UpdateCommentRequest request,
+                                        Principal principal) {
+        String username = principal.getName();
+
+        return commentService.updateCommentById(postId, commentId, username, request);
     }
 
 }

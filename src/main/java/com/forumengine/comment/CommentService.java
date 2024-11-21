@@ -2,6 +2,7 @@ package com.forumengine.comment;
 
 import com.forumengine.comment.dto.CommentDTO;
 import com.forumengine.comment.dto.CreateCommentDTO;
+import com.forumengine.comment.dto.UpdateCommentRequest;
 import com.forumengine.exception.AccessDeniedException;
 import com.forumengine.exception.CommentNotBelongToPostException;
 import com.forumengine.exception.EntityNotFoundException;
@@ -28,6 +29,7 @@ public class CommentService {
 
     private static final String SORT_PROPERTIES = "createdAt";
     private static final String ACCESS_DENIED_MESSAGE = "You do not have permission to delete this post.";
+    private static final String ACCESS_DENIED_MESSAGE_UPDATE = "You do not have permission to update this post.";
     private static final String POST_NOT_FOUND_MESSAGE = "Post %s";
     private static final String COMMENT_NOT_FOUND_MESSAGE = "Comment %s";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
@@ -136,5 +138,34 @@ public class CommentService {
         }
 
         return commentMapper.toCommentDTO(comment.get());
+    }
+
+    public CommentDTO updateCommentById(Long postId, Long commentId, String username, UpdateCommentRequest request) {
+        Optional<Post> findPost = postRepository.findById(postId);
+        if (findPost.isEmpty()) throw new EntityNotFoundException(POST_NOT_FOUND_MESSAGE.formatted(postId));
+        Post post = findPost.get();
+
+        Optional<Comment> findComment = commentRepository.findById(commentId);
+        if (findComment.isEmpty()) throw new EntityNotFoundException(COMMENT_NOT_FOUND_MESSAGE.formatted(commentId));
+        Comment comment = findComment.get();
+
+        if (!comment.getPost().getId().equals(postId)) {
+            throw new CommentNotBelongToPostException(commentId, postId);
+        }
+
+        Optional<User> findUser = userRepository.findByUsername(username);
+        if (findUser.isEmpty()) throw new EntityNotFoundException(username);
+        User loggedInUser = findUser.get();
+
+        if (!isAuthor(loggedInUser.getId(), comment.getAuthor().getId())) throw new AccessDeniedException(ACCESS_DENIED_MESSAGE_UPDATE);
+
+        String newContent = request.getContent();
+        if (newContent != null && !newContent.isEmpty()) {
+            comment.setContent(newContent);
+        }
+        comment.setUpdatedAt(LocalDateTime.now());
+        Comment savedComment = commentRepository.save(comment);
+
+        return commentMapper.toCommentDTO(savedComment);
     }
 }

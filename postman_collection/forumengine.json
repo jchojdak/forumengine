@@ -458,6 +458,37 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Update comment by ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/posts/1/comments/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"posts",
+								"1",
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
