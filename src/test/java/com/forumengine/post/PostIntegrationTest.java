@@ -6,6 +6,7 @@ import com.forumengine.category.Category;
 import com.forumengine.category.CategoryRepository;
 import com.forumengine.comment.Comment;
 import com.forumengine.post.dto.CreatePostDTO;
+import com.forumengine.post.dto.UpdatePostRequest;
 import com.forumengine.user.User;
 import com.forumengine.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -37,14 +38,18 @@ public class PostIntegrationTest extends IntegrationTestConfig {
 
     private static final Long AUTHOR_ID = 1L;
     private static final String AUTHOR_USERNAME = "testAuthor";
+    private static final String INVALID_AUTHOR_USERNAME = "invalidUsername123";
     private static final String AUTHOR_ROLE = "USER";
 
     private static final String ERROR_MESSAGE_404 = "NOT_FOUND";
+    private static final String ACCESS_DENIED_MESSAGE_UPDATE = "You do not have permission to update this post.";
 
     private static final Long POST_ID = 1L;
     private static final Long INVALID_POST_ID = 404L;
     private static final String POST_TITLE = "Example post title";
+    private static final String NEW_POST_TITLE = "Hello world";
     private static final String POST_CONTENT = "Example post content";
+    private static final String NEW_POST_CONTENT = "Hello world, new content";
 
     @Autowired
     private MockMvc mockMvc;
@@ -59,6 +64,7 @@ public class PostIntegrationTest extends IntegrationTestConfig {
     private UserRepository userRepository;
 
     private User testUser;
+    private User invalidUser;
     private Category testCategory;
 
     @BeforeEach
@@ -191,6 +197,33 @@ public class PostIntegrationTest extends IntegrationTestConfig {
 
         // then
         result.andExpect(status().is(404));
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = AUTHOR_USERNAME, roles = AUTHOR_ROLE)
+    void shouldReturn200AndPostDetails_whenPostIsUpdatedSuccessfully() throws Exception {
+        // given
+        Post post = new Post();
+        post.setTitle(POST_TITLE);
+        post.setContent(POST_CONTENT);
+        post.setAuthor(testUser);
+        post.setCategory(testCategory);
+        Post savedPost = postRepository.save(post);
+
+        UpdatePostRequest request = new UpdatePostRequest();
+        request.setTitle(NEW_POST_TITLE);
+        request.setContent(NEW_POST_CONTENT);
+
+        // when
+        ResultActions result = mockMvc.perform(patch(ENDPOINT + "/" + savedPost.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtils.asJsonString(request)));
+
+        // then
+        result.andExpect(status().is(200))
+                .andExpect(jsonPath("$.title").value(NEW_POST_TITLE))
+                .andExpect(jsonPath("$.content").value(NEW_POST_CONTENT));
     }
 
 }

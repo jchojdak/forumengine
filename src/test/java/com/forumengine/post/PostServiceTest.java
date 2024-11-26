@@ -8,6 +8,7 @@ import com.forumengine.exception.EntityNotFoundException;
 import com.forumengine.post.dto.CreatePostDTO;
 import com.forumengine.post.dto.PostCommentsDTO;
 import com.forumengine.post.dto.PostDTO;
+import com.forumengine.post.dto.UpdatePostRequest;
 import com.forumengine.user.User;
 import com.forumengine.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class PostServiceTest {
@@ -41,7 +43,9 @@ public class PostServiceTest {
     private static final Long POST_ID = 1L;
     private static final Long INVALID_POST_ID = 404L;
     private static final String POST_TITLE = "Example post title";
+    private static final String NEW_POST_TITLE = "Hello world";
     private static final String POST_CONTENT = "Example post content";
+    private static final String NEW_POST_CONTENT = "Hello world, new content";
 
     @InjectMocks
     private PostService postService;
@@ -132,7 +136,7 @@ public class PostServiceTest {
     }
 
     @Test
-    void testCreatePost_throwNotFoundException_whenCategoryNotFound() {
+    void testCreatePost_throwsNotFoundException_whenCategoryNotFound() {
         // given
         String authorName = AUTHOR_USERNAME;
 
@@ -159,7 +163,7 @@ public class PostServiceTest {
     }
 
     @Test
-    void testCreatePost_throwNotFoundException_whenUserNotFound() {
+    void testCreatePost_throwsNotFoundException_whenUserNotFound() {
         // given
         String authorName = INVALID_AUTHOR_USERNAME;
 
@@ -274,7 +278,7 @@ public class PostServiceTest {
     }
 
     @Test
-    void testGetPostById_throwNotFoundException_whenPostNotFound() {
+    void testGetPostById_throwsNotFoundException_whenPostNotFound() {
         // given
         Long id = INVALID_POST_ID;
 
@@ -291,6 +295,40 @@ public class PostServiceTest {
 
         verify(postRepository).findById(id);
         verify(postMapper, never()).toPostCommentsDTO(any(Post.class));
+    }
+
+    @Test
+    void testUpdatePostById() {
+        // given
+        UpdatePostRequest request = new UpdatePostRequest();
+        request.setTitle(NEW_POST_TITLE);
+        request.setContent(NEW_POST_CONTENT);
+
+        Post updatedPost = post;
+        updatedPost.setTitle(NEW_POST_TITLE);
+        updatedPost.setContent(NEW_POST_CONTENT);
+
+        PostDTO updatedPostDTO = postDTO;
+        updatedPostDTO.setTitle(NEW_POST_TITLE);
+        updatedPostDTO.setContent(NEW_POST_CONTENT);
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(author));
+        when(postRepository.save(any(Post.class))).thenReturn(post);
+        when(postMapper.toPostDTO(any(Post.class))).thenReturn(updatedPostDTO);
+
+        // when
+        PostDTO result = postService.updatePostById(POST_ID, AUTHOR_USERNAME, request);
+
+        // then
+        assertNotNull(result);
+        assertEquals(NEW_POST_TITLE, result.getTitle());
+        assertEquals(NEW_POST_CONTENT, result.getContent());
+
+        verify(postRepository).findById(POST_ID);
+        verify(userRepository).findByUsername(AUTHOR_USERNAME);
+        verify(postRepository).save(any(Post.class));
+        verify(postMapper).toPostDTO(any(Post.class));
     }
 
 }
