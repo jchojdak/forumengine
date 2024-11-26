@@ -3,6 +3,7 @@ package com.forumengine.comment;
 import com.forumengine.category.Category;
 import com.forumengine.comment.dto.CommentDTO;
 import com.forumengine.comment.dto.CreateCommentDTO;
+import com.forumengine.comment.dto.UpdateCommentRequest;
 import com.forumengine.exception.CommentNotBelongToPostException;
 import com.forumengine.exception.EntityNotFoundException;
 import com.forumengine.post.Post;
@@ -42,6 +43,7 @@ public class CommentServiceTest {
     private static final Long COMMENT_ID = 1L;
     private static final Long INVALID_COMMENT_ID = 404L;
     private static final String COMMENT_CONTENT = "Test content";
+    private static final String NEW_COMMENT_CONTENT = "Hello world!";
 
     private static final String SORT_PROPERTIES = "createdAt";
 
@@ -290,5 +292,34 @@ public class CommentServiceTest {
         verify(postRepository).findById(POST_ID);
         verify(commentRepository).findById(COMMENT_ID);
         verifyNoInteractions(commentMapper);
+    }
+
+    @Test
+    void testUpdateCommentById() {
+        // given
+        UpdateCommentRequest request = new UpdateCommentRequest();
+        request.setContent(NEW_COMMENT_CONTENT);
+
+        CommentDTO updatedCommentDTO = commentDTO;
+        updatedCommentDTO.setContent(NEW_COMMENT_CONTENT);
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(author));
+        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
+        when(commentMapper.toCommentDTO(any(Comment.class))).thenReturn(updatedCommentDTO);
+
+        // when
+        CommentDTO result = commentService.updateCommentById(POST_ID, COMMENT_ID, AUTHOR_USERNAME, request);
+
+        // then
+        assertNotNull(result);
+        assertEquals(NEW_COMMENT_CONTENT, result.getContent());
+
+        verify(postRepository).findById(POST_ID);
+        verify(commentRepository).findById(COMMENT_ID);
+        verify(userRepository).findByUsername(AUTHOR_USERNAME);
+        verify(commentRepository).save(any(Comment.class));
+        verify(commentMapper).toCommentDTO(any(Comment.class));
     }
 }

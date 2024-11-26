@@ -5,6 +5,7 @@ import com.forumengine.TestUtils;
 import com.forumengine.category.Category;
 import com.forumengine.category.CategoryRepository;
 import com.forumengine.comment.dto.CreateCommentDTO;
+import com.forumengine.comment.dto.UpdateCommentRequest;
 import com.forumengine.post.Post;
 import com.forumengine.post.PostRepository;
 import com.forumengine.user.User;
@@ -22,8 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,6 +45,7 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
 
     private static final Long COMMENT_ID = 1L;
     private static final String COMMENT_CONTENT = "Test content";
+    private static final String NEW_COMMENT_CONTENT = "Hello world!";
 
     @Autowired
     private MockMvc mockMvc;
@@ -107,7 +108,6 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
 
         // then
         result.andExpect(status().is(200))
-                .andExpect(jsonPath("$.id").value(COMMENT_ID))
                 .andExpect(jsonPath("$.postId").value(testPost.getId()))
                 .andExpect(jsonPath("$.authorId").value(testUser.getId()))
                 .andExpect(jsonPath("$.content").value(COMMENT_CONTENT));
@@ -160,6 +160,32 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
 
         // then
         result.andExpect(status().is(404));
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = AUTHOR_USERNAME, roles = AUTHOR_ROLE)
+    void shouldReturn200AndUpdatedCommentDetails_whenCommentIsUpdatedSuccessfully() throws Exception {
+        // given
+        Long postId = testPost.getId();
+
+        Comment comment = new Comment();
+        comment.setContent(COMMENT_CONTENT);
+        comment.setPost(testPost);
+        comment.setAuthor(testUser);
+        Comment savedComment = commentRepository.save(comment);
+
+        UpdateCommentRequest request = new UpdateCommentRequest();
+        request.setContent(NEW_COMMENT_CONTENT);
+
+        // when
+        ResultActions result = mockMvc.perform(patch(ENDPOINT.formatted(postId) + "/" + savedComment.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtils.asJsonString(request)));
+
+        // then
+        result.andExpect(status().is(200))
+                .andExpect(jsonPath("$.content").value(NEW_COMMENT_CONTENT));
     }
 
 }
