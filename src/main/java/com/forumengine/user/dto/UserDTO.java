@@ -1,4 +1,4 @@
-package com.forumengine.user;
+package com.forumengine.user.dto;
 
 import lombok.Data;
 

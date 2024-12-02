@@ -4,7 +4,7 @@ import com.forumengine.security.dto.ChangePasswordRequest;
 import com.forumengine.security.dto.LoginUserDTO;
 import com.forumengine.security.dto.LoginUserResponse;
 import com.forumengine.security.dto.RegisterUserDTO;
-import com.forumengine.user.UserDTO;
+import com.forumengine.user.dto.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

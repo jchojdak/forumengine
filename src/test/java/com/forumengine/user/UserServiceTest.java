@@ -1,6 +1,7 @@
 package com.forumengine.user;
 
 import com.forumengine.exception.EntityNotFoundException;
+import com.forumengine.user.dto.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

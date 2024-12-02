@@ -1,6 +1,7 @@
 package com.forumengine.user;
 
 import com.forumengine.security.dto.RegisterUserDTO;
+import com.forumengine.user.dto.UserDTO;
 import org.springframework.stereotype.Component;
 
 @Component

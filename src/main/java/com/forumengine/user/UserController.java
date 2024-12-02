@@ -1,12 +1,17 @@
 package com.forumengine.user;
 
+import com.forumengine.user.dto.UpdateUserRequest;
+import com.forumengine.user.dto.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/users")
@@ -35,4 +40,17 @@ public class UserController {
         userService.deleteUserById(userId);
     }
 
+    @PatchMapping
+    @Operation(summary = "Update logged in user details", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User details has been successfully updated."),
+            @ApiResponse(responseCode = "401", description = "User is not logged in.", content = @Content)
+    })
+    public UserDTO updateLoggedInUser(@RequestBody @Valid UpdateUserRequest request, Principal principal) {
+        String username = principal.getName();
+
+        UserDTO updatedUser = userService.updateUserByName(username, request);
+
+        return updatedUser;
+    }
 }
