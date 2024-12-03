@@ -71,7 +71,8 @@ public class PostController {
     @Operation(summary = "Update post by ID", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Post successfully updated."),
-            @ApiResponse(responseCode = "403", description = "User doesn't have permission.", content = @Content)
+            @ApiResponse(responseCode = "403", description = "User doesn't have permission.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Post not found.", content = @Content)
     })
     public PostDTO updatePostById(@PathVariable Long id,
                                   @RequestBody @Valid UpdatePostRequest request,

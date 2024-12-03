@@ -5,6 +5,7 @@ import com.forumengine.TestUtils;
 import com.forumengine.category.Category;
 import com.forumengine.category.CategoryRepository;
 import com.forumengine.comment.Comment;
+import com.forumengine.comment.CommentRepository;
 import com.forumengine.post.dto.CreatePostDTO;
 import com.forumengine.post.dto.UpdatePostRequest;
 import com.forumengine.user.User;
@@ -59,6 +60,9 @@ public class PostIntegrationTest extends IntegrationTestConfig {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -164,12 +168,16 @@ public class PostIntegrationTest extends IntegrationTestConfig {
         post.setAuthor(testUser);
         post.setCategory(testCategory);
 
-        for (Comment comment : comments) {
-            comment.setPost(post);
-        }
-        post.setComments(comments);
-
         Post savedPost = postRepository.save(post);
+
+        for (Comment comment : comments) {
+            comment.setPost(savedPost);
+            commentRepository.save(comment);
+        }
+        savedPost.setComments(comments);
+
+        savedPost = postRepository.save(savedPost);
+
 
         // when
         ResultActions result = mockMvc.perform(get(ENDPOINT + "/" + savedPost.getId())

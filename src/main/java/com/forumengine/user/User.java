@@ -51,7 +51,7 @@ public class User {
     @Column(name = "blocked")
     private boolean blocked;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     private List<Post> posts;
 
     @OneToMany(mappedBy = "author")

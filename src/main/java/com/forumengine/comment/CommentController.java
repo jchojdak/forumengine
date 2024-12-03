@@ -42,7 +42,8 @@ public class CommentController {
     @Operation(summary = "Get all comments")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of comments."),
-            @ApiResponse(responseCode = "404", description = "Comments not found.", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Comments not found.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Post not found.", content = @Content)
     })
     public List<CommentDTO> getAllComments(@PathVariable Long postId,
                                            @RequestParam(required = false) Integer page,
