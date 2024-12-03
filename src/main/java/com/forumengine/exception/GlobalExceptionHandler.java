@@ -87,4 +87,29 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, status);
     }
 
+    @ExceptionHandler(RoleNotAssignedException.class)
+    public ResponseEntity<CustomExceptionResponse> handleRoleNotAssignedException(RoleNotAssignedException ex, HttpServletRequest request) {
+        HttpStatus status = ex.getStatus();
+
+        CustomExceptionResponse response = new CustomExceptionResponse();
+        response.setPath(request.getRequestURI());
+        response.setError(status.name());
+        response.setMessage(ex.getMessage());
+        response.setStatus(status.value());
+
+        return new ResponseEntity<>(response, status);
+    }
+
+    @ExceptionHandler(RoleAlreadyAssignedException.class)
+    public ResponseEntity<CustomExceptionResponse> handleRoleAlreadyAssignedException(RoleAlreadyAssignedException ex, HttpServletRequest request) {
+        HttpStatus status = ex.getStatus();
+
+        CustomExceptionResponse response = new CustomExceptionResponse();
+        response.setPath(request.getRequestURI());
+        response.setError(status.name());
+        response.setMessage(ex.getMessage());
+        response.setStatus(status.value());
+
+        return new ResponseEntity<>(response, status);
+    }
 }
