@@ -21,7 +21,7 @@ services:
     container_name: backend
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: /backend/Dockerfile
     restart: always
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/forumengine

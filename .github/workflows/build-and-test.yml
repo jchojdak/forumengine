@@ -21,4 +21,4 @@ jobs:
           cache: maven
 
       - name: Run unit & integration tests
-        run: mvn -B test --file pom.xml
+        run: mvn -B test --file ./backend/pom.xml
