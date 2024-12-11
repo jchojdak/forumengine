@@ -50,17 +50,17 @@ public class JwtUtils {
     }
 
     public boolean validateJwtToken(String token){
-        try{
+        try {
             Jwts.parserBuilder().setSigningKey(key()).build().parse(token);
             return true;
-        } catch (MalformedJwtException e){
-            logger.error("Invalid jwt token : {} ", e.getMessage());
-        } catch (ExpiredJwtException e){
-            logger.error("Expired token : {} ", e.getMessage());
-        } catch (UnsupportedJwtException e){
-            logger.error("This token is not supported : {} ", e.getMessage());
-        } catch (IllegalArgumentException e){
-            logger.error("No  claims found : {} ", e.getMessage());
+        } catch(MalformedJwtException e) {
+            logger.error("Invalid jwt token: {}", e.getMessage());
+        } catch(ExpiredJwtException e) {
+            logger.error("Expired token: {}", e.getMessage());
+        } catch(UnsupportedJwtException e) {
+            logger.error("This token is not supported: {}", e.getMessage());
+        } catch(IllegalArgumentException e) {
+            logger.error("No  claims found: {}", e.getMessage());
         }
         return false;
     }
