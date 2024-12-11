@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -46,6 +47,8 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
     private static final Long COMMENT_ID = 1L;
     private static final String COMMENT_CONTENT = "Test content";
     private static final String NEW_COMMENT_CONTENT = "Hello world!";
+
+    private static final String ROLE_ADMIN = "ADMIN";
 
     @Autowired
     private MockMvc mockMvc;
@@ -164,6 +167,33 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
 
     @Test
     @Transactional
+    @WithAnonymousUser
+    void shouldReturn200AndCommentDetails_whenGetCommentById() throws Exception {
+        // given
+        Long postId = testPost.getId();
+
+        Comment comment = new Comment();
+        comment.setContent(COMMENT_CONTENT);
+        comment.setPost(testPost);
+        comment.setAuthor(testUser);
+        Comment savedComment = commentRepository.save(comment);
+
+        Long commentId = savedComment.getId();
+
+        // when
+        ResultActions result = mockMvc.perform(get(ENDPOINT.formatted(postId) + "/" + commentId)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        result.andExpect(status().is(200))
+                .andExpect(jsonPath("$.id").value(commentId))
+                .andExpect(jsonPath("$.postId").value(postId))
+                .andExpect(jsonPath("$.authorId").value(testUser.getId()))
+                .andExpect(jsonPath("$.content").value(COMMENT_CONTENT));
+    }
+
+    @Test
+    @Transactional
     @WithMockUser(username = AUTHOR_USERNAME, roles = AUTHOR_ROLE)
     void shouldReturn200AndUpdatedCommentDetails_whenCommentIsUpdatedSuccessfully() throws Exception {
         // given
@@ -175,11 +205,13 @@ public class CommentIntegrationTest extends IntegrationTestConfig {
         comment.setAuthor(testUser);
         Comment savedComment = commentRepository.save(comment);
 
+        Long commentId = savedComment.getId();
+
         UpdateCommentRequest request = new UpdateCommentRequest();
         request.setContent(NEW_COMMENT_CONTENT);
 
         // when
-        ResultActions result = mockMvc.perform(patch(ENDPOINT.formatted(postId) + "/" + savedComment.getId())
+        ResultActions result = mockMvc.perform(patch(ENDPOINT.formatted(postId) + "/" + commentId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtils.asJsonString(request)));
 

@@ -88,6 +88,25 @@ public class RoleIntegrationTest extends IntegrationTestConfig {
     @Test
     @Transactional
     @WithMockUser(username = USER_USERNAME, roles = ROLE_ADMIN)
+    void shouldReturn400_whenUserAlreadyHasRoleAssigned() throws Exception {
+        // given
+        Long userId = testUser.getId();
+        Long roleId = testRole.getId();
+
+        testUser.getRoles().add(testRole);
+        userRepository.save(testUser);
+
+        // when
+        ResultActions result = mockMvc.perform(post(ENDPOINT.formatted(userId, roleId))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        result.andExpect(status().is(400));
+    }
+
+    @Test
+    @Transactional
+    @WithMockUser(username = USER_USERNAME, roles = ROLE_ADMIN)
     void shouldReturn200_whenRoleWasRemovedFromUser() throws Exception {
         // given
         Long userId = testUser.getId();
@@ -104,4 +123,19 @@ public class RoleIntegrationTest extends IntegrationTestConfig {
         result.andExpect(status().is(200));
     }
 
+    @Test
+    @Transactional
+    @WithMockUser(username = USER_USERNAME, roles = ROLE_ADMIN)
+    void shouldReturn400_whenRoleIsNotAssignedToUser() throws Exception {
+        // given
+        Long userId = testUser.getId();
+        Long roleId = testRole.getId();
+
+        // when
+        ResultActions result = mockMvc.perform(delete(ENDPOINT.formatted(userId, roleId))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        result.andExpect(status().is(400));
+    }
 }

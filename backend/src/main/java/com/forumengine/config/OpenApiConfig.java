@@ -1,6 +1,7 @@
 package com.forumengine.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(
                 title = "ForumEngine RestAPI",
                 version = "1.0",
-                description = "Author: ",
+                description = "Default admin account: username: admin, password: admin",
                 contact = @Contact(
                         name = "Jakub Chojdak",
                         email = "jchojdak@gmail.com",
@@ -24,7 +25,9 @@ import org.springframework.context.annotation.Configuration;
         name = "bearerAuth",
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
-        scheme = "bearer"
+        scheme = "bearer",
+        description = "JWT Bearer token used for authentication",
+        in = SecuritySchemeIn.HEADER
 )
 public class OpenApiConfig {
 }

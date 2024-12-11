@@ -85,7 +85,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void testCreateCategory_throwEntityAlreadyExistsException_whenNameIsFound() {
+    void testCreateCategory_throwsEntityAlreadyExistsException_whenNameIsFound() {
         //given
         CreateCategoryDTO createCategoryDTO = new CreateCategoryDTO();
         createCategoryDTO.setName(category.getName());
@@ -125,7 +125,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    void testGetCategoryById_throwNotFoundException_whenCategoryNotFound() {
+    void testGetCategoryById_throwsNotFoundException_whenCategoryNotFound() {
         // given
         when(categoryRepository.findById(NOT_FOUND_ID)).thenReturn(Optional.empty());
 

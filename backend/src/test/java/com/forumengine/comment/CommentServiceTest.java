@@ -8,6 +8,7 @@ import com.forumengine.exception.CommentNotBelongToPostException;
 import com.forumengine.exception.EntityNotFoundException;
 import com.forumengine.post.Post;
 import com.forumengine.post.PostRepository;
+import com.forumengine.security.CustomUserDetails;
 import com.forumengine.user.User;
 import com.forumengine.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import org.springframework.security.core.Authentication;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +33,8 @@ public class CommentServiceTest {
 
     private static final Long AUTHOR_ID = 1L;
     private static final String AUTHOR_USERNAME = "testAuthor";
+
+    private static final String INVALID_USERNAME = "invaliduser404";
 
     private static final Long CATEGORY_ID = 1L;
     private static final String CATEGORY_NAME = "Test category";
@@ -66,6 +70,9 @@ public class CommentServiceTest {
 
     @Mock
     private CommentMapper commentMapper;
+
+    @Mock
+    private Authentication auth;
 
     private Category category;
     private User author;
@@ -132,6 +139,50 @@ public class CommentServiceTest {
     }
 
     @Test
+    void testCreateComment_throwsEntityNotFound_whenPostIsNotFound() {
+        // given
+        CreateCommentDTO createCommentDTO = new CreateCommentDTO();
+        createCommentDTO.setContent(COMMENT_CONTENT);
+
+        when(postRepository.findById(INVALID_POST_ID)).thenReturn(Optional.empty());
+
+        // when
+        EntityNotFoundException result = assertThrows(EntityNotFoundException.class, () -> {
+            commentService.createComment(INVALID_POST_ID, createCommentDTO, AUTHOR_USERNAME);
+        });
+
+        // then
+        assertNotNull(result);
+        assertEquals(NOT_FOUND_MESSAGE.formatted(INVALID_POST_ID), result.getMessage());
+
+        verify(postRepository).findById(INVALID_POST_ID);
+        verifyNoInteractions(userRepository, commentRepository, commentMapper);
+    }
+
+    @Test
+    void testCreateComment_throwsEntityNotFound_whenAuthorIsNotFound() {
+        // given
+        CreateCommentDTO createCommentDTO = new CreateCommentDTO();
+        createCommentDTO.setContent(COMMENT_CONTENT);
+
+        when(postRepository.findById(POST_ID)).thenReturn(Optional.of(post));
+        when(userRepository.findByUsername(INVALID_USERNAME)).thenReturn(Optional.empty());
+
+        // when
+        EntityNotFoundException result = assertThrows(EntityNotFoundException.class, () -> {
+            commentService.createComment(POST_ID, createCommentDTO, INVALID_USERNAME);
+        });
+
+        // then
+        assertNotNull(result);
+        assertEquals(NOT_FOUND_MESSAGE.formatted(INVALID_USERNAME), result.getMessage());
+
+        verify(postRepository).findById(POST_ID);
+        verify(userRepository).findByUsername(INVALID_USERNAME);
+        verifyNoInteractions(commentRepository, commentMapper);
+    }
+
+    @Test
     void testGetAllComments() {
         // given
         Long postId = 1L;
@@ -161,7 +212,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    void testGetAllComments_throwEntityNotException_whenPostNotFound() {
+    void testGetAllComments_throwsEntityNotException_whenPostIsNotFound() {
         // given
         Long postId = INVALID_POST_ID;
         Integer page = 0;
@@ -233,7 +284,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    void testGetCommentById_throwEntityNotException_whenPostNotFound() {
+    void testGetCommentById_throwsEntityNotFoundException_whenPostIsNotFound() {
         // given
         when(postRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -251,7 +302,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    void testGetCommentById_throwEntityNotException_whenCommentNotFound() {
+    void testGetCommentById_throwsEntityNotFoundException_whenCommentIsNotFound() {
         // given
         when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
         when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -271,7 +322,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    void testGetCommentById_throwCommentNotBelongToPostException() {
+    void testGetCommentById_throwsCommentNotBelongToPostException() {
         // given
         Post secondPost = new Post();
         secondPost.setId(SECOND_POST_ID);
@@ -321,5 +372,68 @@ public class CommentServiceTest {
         verify(userRepository).findByUsername(AUTHOR_USERNAME);
         verify(commentRepository).save(any(Comment.class));
         verify(commentMapper).toCommentDTO(any(Comment.class));
+    }
+
+    @Test
+    void testDeleteCommentById() {
+        // given
+        when(postRepository.findById(POST_ID)).thenReturn(Optional.of(post));
+        when(commentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(comment));
+        when(auth.getPrincipal()).thenReturn(CustomUserDetails.build(author));
+
+        // when
+        commentService.deleteCommentById(POST_ID, COMMENT_ID, auth);
+
+        // then
+        verify(commentRepository).deleteById(COMMENT_ID);
+    }
+
+    @Test
+    void testDeleteCommentById_throwsAccessDeniedException_whenUserIsNotAdmin() {
+        // given
+        when(postRepository.findById(POST_ID)).thenReturn(Optional.of(post));
+        when(commentRepository.findById(COMMENT_ID)).thenReturn(Optional.of(comment));
+        when(auth.getPrincipal()).thenReturn(CustomUserDetails.build(author));
+
+        // when
+        commentService.deleteCommentById(POST_ID, COMMENT_ID, auth);
+
+        // then
+        verify(commentRepository).deleteById(COMMENT_ID);
+    }
+
+    @Test
+    void testDeleteCommentById_throwsEntityNotFoundException_whenPostIsNotFound() {
+        // given
+        when(postRepository.findById(INVALID_POST_ID)).thenReturn(Optional.empty());
+
+        // when
+        EntityNotFoundException result = assertThrows(EntityNotFoundException.class, () -> {
+            commentService.deleteCommentById(INVALID_POST_ID, COMMENT_ID, auth);
+        });
+
+        // then
+        assertNotNull(result);
+        assertEquals(NOT_FOUND_MESSAGE.formatted(INVALID_POST_ID), result.getMessage());
+
+        verify(commentRepository, never()).deleteById(INVALID_COMMENT_ID);
+    }
+
+    @Test
+    void testDeleteCommentById_throwsEntityNotFoundException_whenCommentIsNotFound() {
+        // given
+        when(postRepository.findById(POST_ID)).thenReturn(Optional.of(post));
+        when(commentRepository.findById(INVALID_COMMENT_ID)).thenReturn(Optional.empty());
+
+        // when
+        EntityNotFoundException result = assertThrows(EntityNotFoundException.class, () -> {
+            commentService.deleteCommentById(POST_ID, INVALID_COMMENT_ID, auth);
+        });
+
+        // then
+        assertNotNull(result);
+        assertEquals(COMMENT_NOT_FOUND_MESSAGE.formatted(INVALID_COMMENT_ID), result.getMessage());
+
+        verify(commentRepository, never()).deleteById(COMMENT_ID);
     }
 }

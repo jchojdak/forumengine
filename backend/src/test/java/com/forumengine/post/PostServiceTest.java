@@ -4,11 +4,13 @@ import com.forumengine.TestUtils;
 import com.forumengine.category.Category;
 import com.forumengine.category.CategoryRepository;
 import com.forumengine.comment.dto.CommentDTO;
+import com.forumengine.exception.AccessDeniedException;
 import com.forumengine.exception.EntityNotFoundException;
 import com.forumengine.post.dto.CreatePostDTO;
 import com.forumengine.post.dto.PostCommentsDTO;
 import com.forumengine.post.dto.PostDTO;
 import com.forumengine.post.dto.UpdatePostRequest;
+import com.forumengine.security.CustomUserDetails;
 import com.forumengine.user.User;
 import com.forumengine.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import org.springframework.security.core.Authentication;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,6 +65,9 @@ public class PostServiceTest {
     @Mock
     private PostMapper postMapper;
 
+    @Mock
+    private Authentication auth;
+
     private Category category;
     private User author;
     private Post post;
@@ -84,6 +90,7 @@ public class PostServiceTest {
         post = new Post();
         post.setId(POST_ID);
         post.setAuthor(author);
+        post.setComments(List.of());
         post.setCategory(category);
         post.setCreatedAt(now);
         post.setUpdatedAt(now);
@@ -329,6 +336,89 @@ public class PostServiceTest {
         verify(userRepository).findByUsername(AUTHOR_USERNAME);
         verify(postRepository).save(any(Post.class));
         verify(postMapper).toPostDTO(any(Post.class));
+    }
+
+    @Test
+    void testUpdatePostById_throwsAccessDeniedException_whenUserIsNotAuthor() {
+        // given
+        UpdatePostRequest request = new UpdatePostRequest();
+        request.setTitle(NEW_POST_TITLE);
+        request.setContent(NEW_POST_CONTENT);
+
+        Post updatedPost = post;
+        updatedPost.setTitle(NEW_POST_TITLE);
+        updatedPost.setContent(NEW_POST_CONTENT);
+
+        PostDTO updatedPostDTO = postDTO;
+        updatedPostDTO.setTitle(NEW_POST_TITLE);
+        updatedPostDTO.setContent(NEW_POST_CONTENT);
+
+        User anotherUser = new User();
+        anotherUser.setId(AUTHOR_ID + 1);
+        anotherUser.setUsername(INVALID_AUTHOR_USERNAME);
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(anotherUser));
+
+        // when
+        AccessDeniedException result = assertThrows(AccessDeniedException.class, () -> {
+            postService.updatePostById(POST_ID, INVALID_AUTHOR_USERNAME, request);
+        });
+
+        // then
+        assertNotNull(result);
+
+        verify(postRepository).findById(POST_ID);
+        verify(userRepository).findByUsername(INVALID_AUTHOR_USERNAME);
+        verify(postRepository, never()).save(any(Post.class));
+        verify(postMapper, never()).toPostDTO(any(Post.class));
+    }
+
+    @Test
+    void testDeletePostById() {
+        // given
+        when(postRepository.findById(POST_ID)).thenReturn(Optional.of(post));
+        when(auth.getPrincipal()).thenReturn(CustomUserDetails.build(author));
+
+        // when
+        postService.deletePostById(POST_ID, auth);
+
+        // then
+        verify(postRepository).delete(any(Post.class));
+    }
+
+    @Test
+    void testDeletePostById_throwsEntityNotFoundException_whenPostIsNotFound() {
+        // given
+        when(postRepository.findById(POST_ID)).thenReturn(Optional.empty());
+        //when(auth.getPrincipal()).thenReturn(CustomUserDetails.build(author));
+
+        // when
+        assertThrows(EntityNotFoundException.class, () -> {
+            postService.deletePostById(POST_ID, auth);
+        });
+
+        // then
+        verify(postRepository, never()).delete(any(Post.class));
+    }
+
+    @Test
+    void testDeletePostById_throwsAccessDeniedException_whenUserIsNotAuthor() {
+        // given
+        User anotherUser = new User();
+        anotherUser.setId(AUTHOR_ID + 1);
+        anotherUser.setUsername(AUTHOR_USERNAME.repeat(2));
+
+        when(postRepository.findById(POST_ID)).thenReturn(Optional.of(post));
+        when(auth.getPrincipal()).thenReturn(CustomUserDetails.build(anotherUser));
+
+        // when
+        assertThrows(AccessDeniedException.class, () -> {
+            postService.deletePostById(POST_ID, auth);
+        });
+
+        // then
+        verify(postRepository, never()).delete(any(Post.class));
     }
 
 }
