@@ -14,7 +14,7 @@
 * * [Security](#security)
 
 ## About
-This REST API application built using Spring Boot and Java allows you to manage an online forum.
+CRUD application where people can sign up, log in, creating, updating and deleting posts. Also, users can reply to posts in the comment section and much, much more. It’s a great platform for building a community where people can interact and share knowledge.
 
 ## Technology stack
 ### Backend
@@ -30,8 +30,7 @@ This REST API application built using Spring Boot and Java allows you to manage 
 
 ### Testing
 
-![code_coverage](https://github.com/user-attachments/assets/d5715540-1f61-403c-823b-0d3bc6a59d2b)
-
+![code_coverage](https://github.com/user-attachments/assets/7789aeb7-46c4-4831-9f3b-6cea2bc56998)
 
 Unit & integration tests
 * JUnit 5
