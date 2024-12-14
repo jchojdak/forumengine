@@ -73,17 +73,17 @@ public class PostIntegrationTest extends IntegrationTestConfig {
 
     @BeforeEach
     void setUp() {
+        categoryRepository.deleteAll();
         Category category = new Category();
         category.setId(CATEGORY_ID);
         category.setName(CATEGORY_NAME);
         category.setDescription(CATEGORY_DESCRIPTION);
-
         testCategory = categoryRepository.save(category);
 
+        userRepository.deleteAll();
         User user = new User();
         user.setId(AUTHOR_ID);
         user.setUsername(AUTHOR_USERNAME);
-
         testUser = userRepository.save(user);
     }
 
