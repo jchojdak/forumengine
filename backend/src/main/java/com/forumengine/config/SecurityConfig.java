@@ -1,5 +1,8 @@
-package com.forumengine.security;
+package com.forumengine.config;
 
+import com.forumengine.security.AuthEntryPoint;
+import com.forumengine.security.AuthTokenFilter;
+import com.forumengine.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
