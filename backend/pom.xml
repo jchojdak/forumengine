@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.forumengine</groupId>
 	<artifactId>forumengine</artifactId>
-	<version>0.0.2-BETA</version>
+	<version>1.0</version>
 	<name>ForumEngine</name>
 	<description>Description</description>
 	<url>https://github.com/jchojdak/forumengine</url>

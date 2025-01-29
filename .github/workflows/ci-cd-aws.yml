@@ -1,0 +1,50 @@
+name: CI/CD for AWS EC2 & RDS
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        working-directory: backend
+        run: mvn clean install
+      - name: Log in to Docker Hub
+        run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
+      - name: Build Docker image
+        working-directory: backend
+        run: docker build -t forumengine:latest .
+      - name: Push Docker image
+        run: |
+          docker tag forumengine:latest ${{ secrets.DOCKER_USERNAME }}/forumengine:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/forumengine:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull image from Docker Hub
+        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/forumengine:latest
+      - name: Delete old Docker container
+        run: sudo docker rm -f forumengine
+      - name: Run Docker container
+        run: |
+          sudo docker run -d -p 8080:8080 \
+                          -e SPRING_PROFILES_ACTIVE=prod \
+                          -e SPRING_DATASOURCE_URL=${{ secrets.DB_URL }} \
+                          -e SPRING_DATASOURCE_USERNAME=${{ secrets.DB_USERNAME }} \
+                          -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} \
+                          --name forumengine ${{ secrets.DOCKER_USERNAME }}/forumengine:latest
