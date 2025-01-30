@@ -24,8 +24,7 @@ jobs:
       - name: Log in to Docker Hub
         run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
       - name: Build Docker image
-        working-directory: backend
-        run: docker build -t forumengine:latest .
+        run: docker build -t forumengine:latest -f backend/Dockerfile .
       - name: Push Docker image
         run: |
           docker tag forumengine:latest ${{ secrets.DOCKER_USERNAME }}/forumengine:latest
