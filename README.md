@@ -1,4 +1,6 @@
 ﻿# ForumEngine
+**DEMO: [http://ec2-13-53-102-21.eu-north-1.compute.amazonaws.com:8080/swagger-ui/index.html](http://ec2-13-53-102-21.eu-north-1.compute.amazonaws.com:8080/swagger-ui/index.html)**
+
 * [About](#about)
 * [Technology stack](#technology-stack)
 * * [Backend](#backend)
@@ -6,6 +8,7 @@
 * * [Testing](#testing)
 * * [Containerization](#containerization)
 * * [CI/CD](#cicd)
+* * [Amazon Web Services](#amazon-web-services)
 * [API documentation](#api-documentation)
 * * [Swagger UI](#swagger-ui)
 * * [Postman](#postman)
@@ -47,6 +50,19 @@ Unit & integration tests
 ### CI/CD
 This repository uses **GitHub Actions** for automatic building and testing on every `push` and `pull request` to the `master` branch.
 
+Additionally, a complete CI/CD pipeline has been configured, which includes:
+- Building the application's Docker image.
+- Pushing the generated image to Docker Hub.
+- Deploying the application on an AWS EC2 instance.
+- Using AWS RDS as the application's database.
+
+### Amazon Web Services
+- **AWS EC2**: The application is deployed on an AWS EC2 (Elastic Compute Cloud) instance.
+- **AWS RDS**: The application's database is hosted on AWS RDS (Relational Database Service).
+```
+http://ec2-13-53-102-21.eu-north-1.compute.amazonaws.com:8080
+```
+
 ## API documentation
 ### Swagger UI
 
@@ -66,11 +82,11 @@ https://github.com/jchojdak/forumengine/blob/master/postman_collection/forumengi
 To launch the application, follow the steps:
 1. Clone project
 ```
-git clone https://github.com/jchojdak/ForumEngine.git
+git clone https://github.com/jchojdak/forumengine.git
 ```
 2. Open cloned directory
 ```
-cd ForumEngine
+cd forumengine
 ```
 3. Start the application using docker-compose
 ```
