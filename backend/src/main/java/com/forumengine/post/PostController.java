@@ -42,8 +42,11 @@ public class PostController {
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of posts.")
     public List<PostDTO> getAllPosts(@RequestParam(required = false) Integer page,
                                      @RequestParam(required = false) Integer size,
-                                     @RequestParam(required = false) Sort.Direction sort) {
-        return postService.getAllPosts(page, size, sort);
+                                     @RequestParam(required = false) Sort.Direction sort,
+                                     @RequestParam(required = false) Long categoryId) {
+        return (categoryId != null)
+                ? postService.getAllPostsByCategoryId(page, size, sort, categoryId)
+                : postService.getAllPosts(page, size, sort);
     }
 
     @GetMapping("/{id}")

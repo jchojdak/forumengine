@@ -248,8 +248,9 @@ The token can be generated using POST `/login` endpoint.
 - `page` (Integer, optional): The page number to retrieve. Default value is 0.
 - `size` (Integer, optional): The number of posts per page. Default value is 10.
 - `sort` (Sort.Direction, optional): The sorting direction. Default value is ASC.
+- `categoryId` (Long, optional): Get by category ID. Not required.
 
-*Example:* `/posts?page=3&size=20&sort=DESC`
+*Example:* `/posts?page=3&size=20&sort=DESC&categoryId=2`
 
 ### 10. Get post by ID
 

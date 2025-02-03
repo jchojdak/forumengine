@@ -222,6 +222,32 @@ public class PostServiceTest {
     }
 
     @Test
+    void getAllPostsByCategoryId() {
+        // given
+        Integer page = 0;
+        Integer size = 1;
+        Sort.Direction sort = Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort, "createdAt"));
+
+        Page<Post> postsPage = new PageImpl<>(List.of(post), pageable, 1);
+
+        when(postRepository.findByCategoryId(CATEGORY_ID, pageable)).thenReturn(postsPage);
+        when(postMapper.toPostDTOs(anyList())).thenReturn(List.of(postDTO));
+
+        // when
+        List<PostDTO> result = postService.getAllPostsByCategoryId(page, size, sort, CATEGORY_ID);
+
+        // then
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        assertEquals(postDTO, result.get(0));
+
+        verify(postRepository).findByCategoryId(CATEGORY_ID, pageable);
+        verify(postMapper).toPostDTOs(anyList());
+    }
+
+    @Test
     void testGetAllPosts_withNullParameters() {
         // given
         Integer page = null;

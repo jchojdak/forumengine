@@ -1172,7 +1172,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/posts?page=0&size=15&sort=ASC",
+							"raw": "http://localhost:8080/posts?page=0&size=15&sort=ASC&categoryId=2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1196,6 +1196,11 @@
 									"key": "sort",
 									"value": "ASC",
 									"description": "(Sort.Direction, optional): The sorting direction. Default value is ASC."
+								},
+								{
+									"key": "categoryId",
+									"value": "2",
+									"description": "(Long, optional): Get by category ID. Not required."
 								}
 							]
 						}

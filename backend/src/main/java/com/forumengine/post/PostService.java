@@ -73,6 +73,20 @@ public class PostService {
         return postMapper.toPostDTOs(postsPage.getContent());
     }
 
+    public List<PostDTO> getAllPostsByCategoryId(Integer page, Integer size, Sort.Direction sort, Long categoryId) {
+        int pageNumber = (page != null && page >= 0) ? page : 0;
+        int pageSize = (size != null && size >= 1) ? size : 10;
+        Sort.Direction sortDirection = (sort != null) ? sort : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortDirection, SORT_PROPERTIES));
+
+        Page<Post> postsPage = (categoryId != null)
+                ? postRepository.findByCategoryId(categoryId, pageable)
+                : postRepository.findAll(pageable);
+
+        return postMapper.toPostDTOs(postsPage.getContent());
+    }
+
     public PostCommentsDTO getPostById(Long id) {
         Optional<Post> post = postRepository.findById(id);
 
