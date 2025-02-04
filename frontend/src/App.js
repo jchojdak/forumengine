@@ -6,8 +6,10 @@ import SignupPage from "./pages/SignupPage/SignupPage";
 import LogoutPage from "./pages/LogoutPage";
 import CategoryPage from './pages/CategoryPage/CategoryPage';
 import PostPage from './pages/PostPage/PostPage';
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import AddPostPage from './pages/AddPostPage/AddPostPage';
+import UserPage from './pages/UserPage/UserPage';
+import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
             <Route path="/logout" element={<LogoutPage />} />
             <Route path="/category/:categoryId" element={<CategoryPage />} />
             <Route path="/post/:postId" element={<PostPage />} />
+            <Route path="/post/add/:categoryId?" element={<AddPostPage />} />
+            <Route path="/user/:userId" element={<UserPage />} />
           </Routes>
         </div>
         <Footer />

@@ -1,4 +1,4 @@
-.post-page {
+.user-page {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
@@ -13,49 +13,51 @@ h1 {
     padding-left: 5px;
 }
 
-.comments {
+.user-info {
     list-style: none;
     padding: 0;
 }
 
-.comment-item {
+.user-info p {
     margin-top: 10px;
     padding: 10px;
     border-top: 1px solid #383838;
     color: #666;
-}
-
-.comment-item p {
     font-size: 14px;
 }
 
-.page-number {
-    background-color: #383838;
-    color: #ffffff;
-    border: 2px solid #383838;
-    padding: 5px;
-}
-
-.filters {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 20px;
-    border: 1px solid #383838;
-    margin-top: 20px;
-}
-
-.yellow-slash {
+.status {
+    font-weight: bold;
     color: #ffcc00;
 }
 
+.update-btn {
+    background: #ffcc00;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.update-btn:hover {
+    opacity: 70%;
+}
+
+.user-group {
+    display: inline-table;
+    padding: 0px 30px 20px;
+}
+
 @media (max-width: 768px) {
-    .post-page {
+    .user-page {
         padding: 10px;
     }
 
-    .comment-item {
+    .user-info p {
         padding: 5px;
     }
 }
