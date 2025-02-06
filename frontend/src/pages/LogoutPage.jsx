@@ -7,12 +7,12 @@ const LogoutPage = () => {
   useEffect(() => {
     localStorage.removeItem('forumengine-token');
     localStorage.removeItem('forumengine-username');
-    localStorage.removeItem('forumengine-role');
+    localStorage.removeItem('forumengine-roles');
     localStorage.removeItem('forumengine-user_id');
 
     setTimeout(() => {
         navigate('/');
-      }, 3000);
+      }, 2000);
   }, [navigate]);
 
   return (

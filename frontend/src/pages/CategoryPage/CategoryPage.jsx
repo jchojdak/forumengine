@@ -4,6 +4,7 @@ import axios from 'axios';
 import './CategoryPage.css';
 import useAuth from '../../hooks/useAuth';
 import { API_URL } from '../../config';
+import { FaPlus } from "react-icons/fa";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
@@ -12,7 +13,7 @@ const CategoryPage = () => {
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortOrder, setSortOrder] = useState('ASC');
+  const [sortOrder, setSortOrder] = useState('DESC');
   const [pageSize, setPageSize] = useState(10);
   const [pageNumber, setPageNumber] = useState(0);
   const { isLoggedIn } = useAuth();
@@ -61,7 +62,7 @@ const CategoryPage = () => {
     <div className="category-page">
       <h1><span className="yellow-slash">/</span> <Link className="nav-link" to={`/category/${category?.id}`}>#{category?.name}</Link></h1>
       <p>{category.description}</p>
-      {isLoggedIn && <Link to={`/post/add/${category.id}`}><button className="add-button">Add new post</button></Link>}
+      {isLoggedIn && <Link to={`/post/add/${category.id}`}><button className="add-button"><FaPlus /> Add new post</button></Link>}
       
       <div className="filters">
         <label>

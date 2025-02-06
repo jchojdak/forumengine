@@ -64,16 +64,16 @@ const UserPage = () => {
 
   return (
     <div className="user-page">
-      <h1><span className="yellow-slash">/</span> #Profile {user.username}</h1>
+      <h1><span className="yellow-slash">/</span> #Profile <span className="yellow-slash">/</span> {user.username}</h1>
       <div className="user-group">
         <h2>User details</h2>
         <p><strong>Username:</strong> {user.username}</p>
         <p><strong>Full Name:</strong> {user.firstName} {user.lastName}</p>
         <p><strong>Mobile:</strong> {user.mobile}</p>
         <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>Registered At:</strong> {new Date(user.registeredAt).toLocaleString()}</p>
-        <p><strong>Status:</strong> {user.active ? 'Active' : 'Inactive'}</p>
-        <p><strong>Blocked:</strong> {user.blocked ? 'Yes' : 'No'}</p>
+        <p><strong>Registered at:</strong> {new Date(user.registeredAt).toLocaleString()}</p>
+        <p><strong>Status:</strong> {user.active ? 'active' : 'inactive'}</p>
+        <p><strong>Blocked:</strong> {user.blocked ? 'yes' : 'no'}</p>
       </div>
 
       <div className="user-group">
@@ -81,16 +81,16 @@ const UserPage = () => {
           <form onSubmit={handleSubmit}>
             <h2>Update my details</h2>
             <div className="input-group">
-              <label>First name: <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} /></label>
+              <label>First name: <input type="text" name="firstName" placeholder="Enter your first name..." value={formData.firstName} onChange={handleChange} /></label>
             </div>
             <div className="input-group">
-              <label>Last name: <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} /></label>
+              <label>Last name: <input type="text" name="lastName" placeholder="Enter your last name..." value={formData.lastName} onChange={handleChange} /></label>
             </div>
             <div className="input-group">
-              <label>Mobile: <input type="text" name="mobile" value={formData.mobile} onChange={handleChange} /></label>
+              <label>Mobile: <input type="text" name="mobile" placeholder="Enter your mobile phone..." value={formData.mobile} onChange={handleChange} /></label>
             </div>
             <div className="input-group">
-              <label>Email: <input type="email" name="email" value={formData.email} onChange={handleChange} /></label>
+              <label>Email: <input type="email" name="email" placeholder="Enter your email..." value={formData.email} onChange={handleChange} /></label>
             </div>
             <button type="submit" className="update-btn">Update</button>
           </form>

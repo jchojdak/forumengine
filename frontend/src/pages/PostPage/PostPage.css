@@ -5,7 +5,7 @@
     background: #282828;
     border: 5px solid #333333;
     box-shadow: 0px 0px 100px rgb(0 0 0 / 15%);
-    color: white;
+    color: #ffffff;
 }
 
 h1 {
@@ -27,6 +27,7 @@ h1 {
 
 .comment-item p {
     font-size: 14px;
+    color: #ffffff;
 }
 
 .page-number {
@@ -48,6 +49,32 @@ h1 {
 
 .yellow-slash {
     color: #ffcc00;
+}
+
+.delete-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.delete-button:hover {
+    background-color: darkred;
+}
+
+.edit-button {
+    background-color: #ffcc00;
+    color: black;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-right: 8px;
+}
+.edit-button:hover {
+    background-color: #e6b800;
 }
 
 @media (max-width: 768px) {

@@ -4,6 +4,7 @@ import './HomePage.css';
 import { Link } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { API_URL } from '../../config';
+import { FaPlus } from "react-icons/fa";
 
 const HomePage = () => {
   const [categories, setCategories] = useState([]);
@@ -72,7 +73,7 @@ const HomePage = () => {
               <h2><Link to={`/category/${category.id}`}>#{category.name}</Link></h2>
               {isLoggedIn && (
                 <Link to={`/post/add/${category.id}`}>
-                  <button className="add-button">Add new post</button>
+                  <button className="add-button"><FaPlus /> Add new post</button>
                 </Link>
               )}
             </div>

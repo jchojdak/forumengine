@@ -43,7 +43,7 @@ const LoginPage = () => {
       if (response.status === 200) {
         localStorage.setItem('forumengine-token', response.data.token);
         localStorage.setItem('forumengine-username', response.data.username);
-        localStorage.setItem('forumengine-role', response.data.role);
+        localStorage.setItem('forumengine-roles', JSON.stringify(response.data.roles));
         localStorage.setItem('forumengine-user_id', response.data.id);
 
         navigate('/');
