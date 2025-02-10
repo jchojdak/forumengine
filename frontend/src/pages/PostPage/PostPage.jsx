@@ -85,7 +85,7 @@ const PostPage = () => {
     )
       .then(() => {
         alert('Post deleted successfully');
-        navigate('/');
+        navigate('/category/' + category?.id);
       })
       .catch(error => {
         alert('Failed to delete post');
@@ -164,7 +164,7 @@ const PostPage = () => {
               <li key={comment.id} className="comment-item">
                 <p>{comment.content}</p>
                 <small>By <Link className="nav-link-grey" to={`/user/${comment.authorId}`}>{users[comment.authorId] || `User ${comment.authorId}`}</Link> on {new Date(comment.createdAt).toLocaleString()}</small>
-                {(isAuthorOfPost || isAdmin) && (
+                {(isAuthorOfComment || isAdmin) && (
                   <>
                     {isAuthorOfComment && <button className="edit-button" onClick={() => {}}><FaEdit /> Edit</button>}
                     <button className="delete-button" onClick={() => handleDeleteComment(comment.id)}><FaTrash /> Delete</button>

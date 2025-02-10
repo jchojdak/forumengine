@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { isTokenValid } from "../utils/jwtUtils";
 
 const useAuth = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -9,6 +10,16 @@ const useAuth = () => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem('forumengine-token');
+
+    if(!isTokenValid(storedToken)) {
+      localStorage.removeItem('forumengine-token');
+      localStorage.removeItem('forumengine-username');
+      localStorage.removeItem('forumengine-user_id');
+      localStorage.removeItem('forumengine-roles');
+
+      console.error("Invalid token, logging out.");
+    }
+
     setToken(storedToken);
     setIsLoggedIn(!!storedToken);
 

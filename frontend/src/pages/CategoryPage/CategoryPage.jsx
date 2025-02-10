@@ -4,7 +4,7 @@ import axios from 'axios';
 import './CategoryPage.css';
 import useAuth from '../../hooks/useAuth';
 import { API_URL } from '../../config';
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaTrash  } from "react-icons/fa";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
@@ -16,7 +16,7 @@ const CategoryPage = () => {
   const [sortOrder, setSortOrder] = useState('DESC');
   const [pageSize, setPageSize] = useState(10);
   const [pageNumber, setPageNumber] = useState(0);
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, userId, token, roles } = useAuth();
 
   useEffect(() => {
     const fetchCategory = axios.get(`${API_URL}/categories/${categoryId}`);
@@ -54,9 +54,30 @@ const CategoryPage = () => {
   const handlePageSizeChange = (e) => setPageSize(Number(e.target.value));
   const handlePageNumberChange = (e) => setPageNumber(Number(e.target.value));
 
+  const handleDeletePost = (postId) => {
+    if (!window.confirm('Are you sure you want to delete this post?')) return;
+
+    axios.delete(`${API_URL}/posts/${postId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(() => {
+        alert('Post deleted successfully');
+        setPosts(posts.filter(post => post.id !== postId));
+      })
+      .catch(error => {
+        alert('Failed to delete post');
+        console.error(error);
+      });
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!category) return <p>Category not found.</p>;
+
+  const isAdmin = roles.includes('ROLE_ADMIN');
 
   return (
     <div className="category-page">
@@ -87,13 +108,21 @@ const CategoryPage = () => {
       </div>
 
       <ul className="posts">
-        {posts.map(post => (
-          <li key={post.id} className="post-item">
-            <h3><Link to={`/post/${post.id}`}>{post.title}</Link></h3>
-            <p>{post.content}</p>
-            <small>By <Link className="nav-link-grey" to={`/user/${post.authorId}`}>{authors[post.authorId] || 'Unknown'}</Link> on {new Date(post.createdAt).toLocaleString()}</small>
-          </li>
-        ))}
+        {posts.map(post => {
+          const isAuthorOfPost = isLoggedIn && Number(userId) === Number(post.authorId);
+          return (
+            <li key={post.id} className="post-item">
+              <h3><Link to={`/post/${post.id}`}>{post.title}</Link></h3>
+              <p>{post.content}</p>
+              <small>By <Link className="nav-link-grey" to={`/user/${post.authorId}`}>{authors[post.authorId] || 'Unknown'}</Link> on {new Date(post.createdAt).toLocaleString()}</small>
+              {(isAuthorOfPost || isAdmin) && (
+                <>
+                  <button className="delete-button" onClick={() => handleDeletePost(post.id)}><FaTrash /> Delete</button>
+                </>
+              )}
+            </li>
+          );
+        })}
       </ul>
 
       <div className="filters">

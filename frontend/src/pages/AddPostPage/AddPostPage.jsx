@@ -40,7 +40,7 @@ const AddPostPage = () => {
       
       if (response.status === 200) {
         alert('Post added successfully!');
-        navigate('/posts');
+        navigate('/post/' + response.data.id);
       }
     } catch (err) {
       console.error('Error:', err);

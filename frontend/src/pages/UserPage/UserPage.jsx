@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../../config';
 import useAuth from '../../hooks/useAuth';
@@ -73,7 +73,7 @@ const UserPage = () => {
         <p><strong>Email:</strong> {user.email}</p>
         <p><strong>Registered at:</strong> {new Date(user.registeredAt).toLocaleString()}</p>
         <p><strong>Status:</strong> {user.active ? 'active' : 'inactive'}</p>
-        <p><strong>Blocked:</strong> {user.blocked ? 'yes' : 'no'}</p>
+        <p><strong>Banned:</strong> {user.blocked ? 'yes' : 'no'}</p>
       </div>
 
       <div className="user-group">
@@ -95,6 +95,10 @@ const UserPage = () => {
             <button type="submit" className="update-btn">Update</button>
           </form>
         )}
+      </div>
+      <div className="user-group">
+        <h2>Posts</h2>
+          <Link className="nav-link"  to={`#`}><p>Not implemented yet!</p></Link>
       </div>
     </div>
   );
