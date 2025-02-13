@@ -66,7 +66,11 @@ const UserPage = () => {
     <div className="user-page">
       <h1><span className="yellow-slash">/</span> #Profile <span className="yellow-slash">/</span> {user.username}</h1>
       <div className="user-group">
-        <h2>User details</h2>
+        <h3>Profile image</h3>
+        <img src="https://cdn.pixabay.com/photo/2014/04/02/10/25/man-303792_640.png" width="150px" alt="img" />
+      </div>
+      <div className="user-group">
+        <h3>User details</h3>
         <p><strong>Username:</strong> {user.username}</p>
         <p><strong>Full Name:</strong> {user.firstName} {user.lastName}</p>
         <p><strong>Mobile:</strong> {user.mobile}</p>
@@ -79,7 +83,7 @@ const UserPage = () => {
       <div className="user-group">
         {userId === loggedInUserId && (
           <form onSubmit={handleSubmit}>
-            <h2>Update my details</h2>
+            <h3>Update my details</h3>
             <div className="input-group">
               <label>First name: <input type="text" name="firstName" placeholder="Enter your first name..." value={formData.firstName} onChange={handleChange} /></label>
             </div>
@@ -97,7 +101,7 @@ const UserPage = () => {
         )}
       </div>
       <div className="user-group">
-        <h2>Posts</h2>
+        <h3>Posts</h3>
           <Link className="nav-link"  to={`#`}><p>Not implemented yet!</p></Link>
       </div>
     </div>

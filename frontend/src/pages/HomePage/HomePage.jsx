@@ -81,9 +81,13 @@ const HomePage = () => {
             <ul className="posts">
               {(posts[category.id] || []).map(post => (
                 <li key={post.id} className="post-item">
-                  <h3><Link to={`/post/${post.id}`}>{post.title}</Link></h3>
-                  <p>{post.content}</p>
-                  <small>By <Link className="nav-link-grey" to={`/user/${post.authorId}`}>{authors[post.authorId] || 'Unknown'}</Link> on {new Date(post.createdAt).toLocaleString()}</small>
+                  <div className="post-content">
+                    <img className="post-avatar" src="https://cdn.pixabay.com/photo/2014/04/02/10/25/man-303792_640.png" width="30px" alt="img" />
+                    <div className="post-text">
+                      <h3><Link to={`/post/${post.id}`}>{post.title}</Link></h3>
+                      <small>By <Link className="nav-link-grey" to={`/user/${post.authorId}`}>{authors[post.authorId] || 'Unknown'}</Link> on {new Date(post.createdAt).toLocaleString()}</small>
+                    </div>
+                  </div>
                 </li>
               ))}
             </ul>

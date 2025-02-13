@@ -119,16 +119,24 @@ const PostPage = () => {
 
   return (
     <div className="post-page">
-      <h1><span className="yellow-slash">/</span> <Link className="nav-link" to={`/category/${category?.id}`}>#{category?.name}</Link> <span className="yellow-slash">/</span> {post.title}</h1>
-      <p>{post.content}</p>
-      <small>By <Link className="nav-link" to={`#`}>{author ? author.username : 'Unknown'}</Link> on {new Date(post.createdAt).toLocaleString()}</small>
-      
-      {(isAuthorOfPost || isAdmin) && (
-        <>
-          {isAuthorOfPost && <button className="edit-button" onClick={() => {}}><FaEdit /> Edit</button>}
-          <button className="delete-button" onClick={handleDeletePost}><FaTrash /> Delete</button>
-        </>
-      )}
+        <h1><span className="yellow-slash">/</span> <Link className="nav-link" to={`/category/${category?.id}`}>#{category?.name}</Link> <span className="yellow-slash">/</span> {post.title}</h1>
+
+        <div className="post-content">
+          <img className="post-avatar" src="https://cdn.pixabay.com/photo/2014/04/02/10/25/man-303792_640.png" width="30px" alt="img" />
+          <div className="post-text">
+          <p>{post.content}</p>
+          <small>By <Link className="nav-link" to={`#`}>{author ? author.username : 'Unknown'}</Link> on {new Date(post.createdAt).toLocaleString()}</small>
+          </div>
+
+          {(isAuthorOfPost || isAdmin) && (
+            <>
+              <div className="post-text">
+                {isAuthorOfPost && <button className="edit-button" onClick={() => {}}><FaEdit /> Edit</button>}
+                <button className="delete-button" onClick={handleDeletePost}><FaTrash /> Delete</button>
+              </div>
+            </>
+          )}
+        </div>
 
       <h2>Comments</h2>
       {isLoggedIn && (<CommentInput postId={postId} onCommentAdded={fetchComments} />)}
@@ -162,14 +170,21 @@ const PostPage = () => {
             const isAuthorOfComment = isLoggedIn && Number(userId) === Number(comment.authorId);
             return (
               <li key={comment.id} className="comment-item">
-                <p>{comment.content}</p>
-                <small>By <Link className="nav-link-grey" to={`/user/${comment.authorId}`}>{users[comment.authorId] || `User ${comment.authorId}`}</Link> on {new Date(comment.createdAt).toLocaleString()}</small>
-                {(isAuthorOfComment || isAdmin) && (
-                  <>
-                    {isAuthorOfComment && <button className="edit-button" onClick={() => {}}><FaEdit /> Edit</button>}
-                    <button className="delete-button" onClick={() => handleDeleteComment(comment.id)}><FaTrash /> Delete</button>
-                  </>
-                )}
+                <div className="comment-content">
+                  <img className="comment-avatar" src="https://cdn.pixabay.com/photo/2014/04/02/10/25/man-303792_640.png" width="30px" alt="img" />
+                  <div className="comment-text">
+                    <p>{comment.content}</p>
+                    <small>By <Link className="nav-link-grey" to={`/user/${comment.authorId}`}>{users[comment.authorId] || `User ${comment.authorId}`}</Link> on {new Date(comment.createdAt).toLocaleString()}</small>
+                  </div>
+                  {(isAuthorOfComment || isAdmin) && (
+                    <>
+                      <div className="comment-text">
+                        {isAuthorOfComment && <button className="edit-button" onClick={() => {}}><FaEdit /> Edit</button>}
+                        <button className="delete-button" onClick={() => handleDeleteComment(comment.id)}><FaTrash /> Delete</button>
+                      </div>
+                    </>
+                  )}
+                </div>
               </li>
             );
           })}

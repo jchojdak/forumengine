@@ -112,14 +112,20 @@ const CategoryPage = () => {
           const isAuthorOfPost = isLoggedIn && Number(userId) === Number(post.authorId);
           return (
             <li key={post.id} className="post-item">
-              <h3><Link to={`/post/${post.id}`}>{post.title}</Link></h3>
-              <p>{post.content}</p>
-              <small>By <Link className="nav-link-grey" to={`/user/${post.authorId}`}>{authors[post.authorId] || 'Unknown'}</Link> on {new Date(post.createdAt).toLocaleString()}</small>
-              {(isAuthorOfPost || isAdmin) && (
-                <>
-                  <button className="delete-button" onClick={() => handleDeletePost(post.id)}><FaTrash /> Delete</button>
-                </>
-              )}
+              <div className="post-content">
+                <img className="post-avatar" src="https://cdn.pixabay.com/photo/2014/04/02/10/25/man-303792_640.png" width="30px" alt="img" />
+                <div className="post-text">
+                  <h3><Link to={`/post/${post.id}`}>{post.title}</Link></h3>
+                  <small>By <Link className="nav-link-grey" to={`/user/${post.authorId}`}>{authors[post.authorId] || 'Unknown'}</Link> on {new Date(post.createdAt).toLocaleString()}</small>
+                </div>
+                {(isAuthorOfPost || isAdmin) && (
+                  <>
+                    <div className="post-text">
+                      <button className="delete-button" onClick={() => handleDeletePost(post.id)}><FaTrash /> Delete</button>
+                    </div>
+                  </>
+                )}
+              </div>
             </li>
           );
         })}

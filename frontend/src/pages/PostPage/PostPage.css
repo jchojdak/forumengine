@@ -77,6 +77,37 @@ h1 {
     background-color: #e6b800;
 }
 
+.comment-item .comment-content {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+.comment-item .comment-text {
+    display: inline-block;
+}
+
+.comment-item .comment-avatar {
+    border-radius: 5px;
+    background: #212121;
+    margin-top: 5px;
+}
+
+.post-page .post-content {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
+
+.post-page .post-text {
+    display: inline-block;
+}
+
+.post-page .post-avatar {
+    border-radius: 5px;
+    background: #212121;
+}
+
 @media (max-width: 768px) {
     .post-page {
         padding: 10px;

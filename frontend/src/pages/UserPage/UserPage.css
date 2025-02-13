@@ -52,6 +52,11 @@ h1 {
     padding: 0px 30px 20px;
 }
 
+.user-page .input-group {
+    margin-top: 5px;
+    text-align: left;
+}
+
 @media (max-width: 768px) {
     .user-page {
         padding: 10px;

@@ -1,20 +1,11 @@
-@keyframes rgbShadow {
-    0% { box-shadow: 0 0 10px red; }
-    25% { box-shadow: 0 0 10px blue; }
-    50% { box-shadow: 0 0 10px green; }
-    75% { box-shadow: 0 0 10px yellow; }
-    100% { box-shadow: 0 0 10px red; }
-}
-
 .navbar {
     width: 100%;
     background: #282828;
-    padding: 10px 0px;
+    padding: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    /*animation: rgbShadow 3s infinite alternate;*/
     border-bottom: 5px solid #333333;
 }
 
@@ -65,7 +56,6 @@
     color: #ffcc00;
 }
 
-/* Responsywność */
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
