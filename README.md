@@ -2,6 +2,7 @@
 **DEMO: [http://ec2-13-53-102-21.eu-north-1.compute.amazonaws.com:8080/swagger-ui/index.html](http://ec2-13-53-102-21.eu-north-1.compute.amazonaws.com:8080/swagger-ui/index.html)**
 
 * [About](#about)
+* * [Monolith architecture pattern](#monolith-architecture-pattern)
 * [Technology stack](#technology-stack)
 * * [Backend](#backend)
 * * [Database](#database)
@@ -18,6 +19,8 @@
 
 ## About
 CRUD application where people can sign up, log in, creating, updating and deleting posts. Also, users can reply to posts in the comment section and much, much more. It’s a great platform for building a community where people can interact and share knowledge.
+### Monolith architecture pattern
+![image](https://github.com/user-attachments/assets/28a2af73-d795-4659-93f7-14ab5a477321)
 
 ## Technology stack
 ### Backend
