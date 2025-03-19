@@ -1,40 +1,47 @@
 ﻿# ForumEngine
-**DEMO: [http://ec2-13-53-102-21.eu-north-1.compute.amazonaws.com:8080/swagger-ui/index.html](http://ec2-13-53-102-21.eu-north-1.compute.amazonaws.com:8080/swagger-ui/index.html)**
 
-* [About](#about)
-* * [Monolithic architecture pattern](#monolithic-architecture-pattern)
-* [Technology stack](#technology-stack)
-* * [Backend](#backend)
-* * [Database](#database)
-* * [Testing](#testing)
-* * [Containerization](#containerization)
-* * [CI/CD](#cicd)
-* * [Amazon Web Services](#amazon-web-services)
-* [API documentation](#api-documentation)
-* * [Swagger UI](#swagger-ui)
-* * [Postman](#postman)
-* [Starting up](#starting-up)
-* [Endpoints](#endpoints)
-* * [Security](#security)
+> [!NOTE]
+> This application is not `business oriented` and my focus is mostly on technical part, I just want to implement a sample with using monolithic architecture pattern.
 
-## About
-CRUD application where people can sign up, log in, creating, updating and deleting posts. Also, users can reply to posts in the comment section and much, much more. It’s a great platform for building a community where people can interact and share knowledge.
-### Monolithic architecture pattern
+> [!WARNING]  
+> This project is in progress.
+ 
+**ONLINE DEMO: [http://ec2-13-53-102-21.eu-north-1.compute.amazonaws.com:8080/swagger-ui/index.html](http://ec2-13-53-102-21.eu-north-1.compute.amazonaws.com:8080/swagger-ui/index.html)**
+
+* [About](#-about)
+* * [Monolithic architecture pattern](#-monolithic-architecture-pattern)
+* [Technology stack](#-technology-stack)
+* * [Backend](#-backend)
+* * [Database](#-database)
+* * [Testing](#-testing)
+* * [Containerization](#-containerization)
+* * [CI/CD](#-cicd)
+* * [Amazon Web Services](#-amazon-web-services)
+* [API documentation](#-api-documentation)
+* * [Swagger UI](#-swagger-ui)
+* * [Postman](#-postman)
+* [Starting up](#-starting-up)
+* [Endpoints](#-endpoints)
+* * [Security](#-security)
+
+## 📌 About
+A CRUD application where people can sign up, log in, create, update and delete posts. Additionally, users can reply to posts in the comment section and use other features. It’s a great platform for building a community where people can interact and share knowledge.
+### 🔗 Monolithic architecture pattern
 ![image](https://github.com/user-attachments/assets/28a2af73-d795-4659-93f7-14ab5a477321)
 
-## Technology stack
-### Backend
+## 🔨 Technology stack
+### 💻 Backend
 * Java 17
 * Spring Boot 3.3.2 
 * Spring Data JPA
 * Spring Security
 * Lombok
 
-### Database
+### 🐬 Database
 * MySQL 8.0
 * Liquibase
 
-### Testing
+### 🧪 Testing
 
 ![code_coverage](https://github.com/user-attachments/assets/7789aeb7-46c4-4831-9f3b-6cea2bc56998)
 
@@ -44,13 +51,13 @@ Unit & integration tests
 * SpringBootTest
 * Testcontainers
 
-### Containerization
+### 📦 Containerization
 * Docker
 * Two containers are configured in the `docker-compose.yml` file:
   - **mysql_db**: MySQL 8.0 database
   - **backend**: Java 17 (Spring Boot) application
 
-### CI/CD
+### 🔁 CI/CD
 This repository uses **GitHub Actions** for automatic building and testing on every `push` and `pull request` to the `master` branch.
 
 Additionally, a complete CI/CD pipeline has been configured, which includes:
@@ -59,29 +66,29 @@ Additionally, a complete CI/CD pipeline has been configured, which includes:
 - Deploying the application on an AWS EC2 instance.
 - Using AWS RDS as the application's database.
 
-### Amazon Web Services
+### 🌐 Amazon Web Services
 - **AWS EC2**: The application is deployed on an AWS EC2 (Elastic Compute Cloud) instance.
 - **AWS RDS**: The application's database is hosted on AWS RDS (Relational Database Service).
 ```
 http://ec2-13-53-102-21.eu-north-1.compute.amazonaws.com:8080
 ```
 
-## API documentation
-### Swagger UI
+## 📄 API documentation
+### 📍 Swagger UI
 
 The application generates interactive API documentation Swagger UI (SpringDoc OpenAPI).
 ```
 http://localhost:8080/swagger-ui/index.html
 ```
 
-### Postman
+### 📍 Postman
 
 Collection to import:
 ```
 https://github.com/jchojdak/forumengine/blob/master/postman_collection/forumengine.json
 ```
 
-## Starting up
+## 🚀 Starting up
 To launch the application, follow the steps:
 1. Clone project
 ```
@@ -110,7 +117,7 @@ username: admin
 password: admin
 ```
 
-## Endpoints
+## 📜 Endpoints
 
 | #  | Method | Endpoint                               | Description                               | Authorization                                      |
 |----|--------|----------------------------------------|-------------------------------------------|----------------------------------------------------|
@@ -137,7 +144,7 @@ password: admin
 | 21 | POST   | `/users/{userId}/roles/{roleId}`       | Assign role to the user                   | Yes (admin)                                        |
 | 22 | DELETE | `/users/{userId}/roles/{roleId}`       | Remove role from the user                 | Yes (admin)                                        |
 
-### Security
+### 🔑 Security
 To access some resources you need to use `header` authorization.
 
 ```
