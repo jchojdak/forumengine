@@ -72,6 +72,10 @@ Additionally, a complete CI/CD pipeline has been configured, which includes:
 ```
 http://ec2-13-53-102-21.eu-north-1.compute.amazonaws.com:8080
 ```
+or
+```
+http://api.forumengine.jchojdak.com:8080
+```
 
 ## 📄 API documentation
 ### 📍 Swagger UI
