@@ -29,6 +29,8 @@
 
 A CRUD application where people can sign up, log in, create, update and delete posts. Additionally, users can reply to posts in the comment section and use other features. It’s a great platform for building a community where people can interact and share knowledge.
 
+<img width="1200" height="1200" alt="forumengine" src="https://github.com/user-attachments/assets/5d015771-7bfd-4893-a72e-c5765ced4e45" />
+
 ### 🔗 Monolithic architecture pattern
 
 ![image](https://github.com/user-attachments/assets/28a2af73-d795-4659-93f7-14ab5a477321)
@@ -427,3 +429,4 @@ _Example:_ `/posts/{postId}/comments?page=3&size=20&sort=DESC`
 **Endpoint:** `/users/{userId}/roles/{roleId}`
 
 **Method:** `DELETE`
+
