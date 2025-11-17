@@ -20,8 +20,8 @@ services:
   backend:
     container_name: backend
     build:
-      context: .
-      dockerfile: /backend/Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     restart: always
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/forumengine
@@ -30,6 +30,19 @@ services:
       - "8080:8080"
     depends_on:
       - mysqldb
+    networks:
+      - forumengine-network
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
     networks:
       - forumengine-network
 
